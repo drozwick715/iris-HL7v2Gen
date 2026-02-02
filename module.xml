@@ -10,7 +10,7 @@
     <SourcesRoot>src</SourcesRoot>
     <Resource Name="dc.PKG"/>
     <FileCopy Name="python/" Target="${mgrdir}python/"/>   
-    <CSPApplication
+    <WebApplication
         Url="/csp/HL7v2Gen"
         Path="/src/csp"
         Directory="{$cspdir}/HL7v2Gen"
@@ -18,7 +18,7 @@
         Recurse="1"
         CookiePath="/csp/HL7v2Gen/" 
         UseCookies="2"
-        MatchRoles=":{$dbrole}" 
+        MatchRoles=":{$globalsDbRole}" 
         PasswordAuthEnabled="1"
         UnauthenticatedEnabled="0"
        />    
