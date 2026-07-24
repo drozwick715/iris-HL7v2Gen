@@ -7,8 +7,7 @@ WORKDIR /opt/irisapp
 RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
 
 
-COPY src src
-COPY python python
+
 COPY module.xml module.xml
 
 # run iris and initial 
@@ -18,7 +17,13 @@ RUN --mount=type=bind,src=.,dst=. \
     iris stop IRIS quietly
     
 FROM $IMAGE AS final
-
+WORKDIR /
+RUN pwd
+RUN ls -la
+COPY ./src /src
+COPY ./python /python
+RUN pwd
+RUN ls -la
 ADD --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} https://github.com/grongierisc/iris-docker-multi-stage-script/releases/latest/download/copy-data.py /irisdev/app/copy-data.py
 
 RUN --mount=type=bind,source=/,target=/builder/root,from=builder \
