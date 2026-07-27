@@ -2,9 +2,6 @@ ARG  IMAGE=intersystemsdc/irishealth-community:preview
 FROM $IMAGE AS builder
 
 
-#WORKDIR /home/irisowner/irisdev
-WORKDIR /opt/irisapp
-RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
 
 
 
@@ -17,6 +14,11 @@ RUN --mount=type=bind,src=.,dst=. \
     iris stop IRIS quietly
     
 FROM $IMAGE AS final
+
+ADD --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} https://github.com/grongierisc/iris-docker-multi-stage-script/releases/latest/download/copy-data.py /irisdev/app/copy-data.py
+
+WORKDIR /opt/irisapp
+RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
 WORKDIR /
 RUN pwd
 RUN ls -la
@@ -24,7 +26,6 @@ COPY ./src /src
 COPY ./python /python
 RUN pwd
 RUN ls -la
-ADD --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} https://github.com/grongierisc/iris-docker-multi-stage-script/releases/latest/download/copy-data.py /irisdev/app/copy-data.py
 
 RUN --mount=type=bind,source=/,target=/builder/root,from=builder \
     cp -f /builder/root/usr/irissys/iris.cpf /usr/irissys/iris.cpf && \

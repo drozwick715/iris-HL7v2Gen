@@ -187,8 +187,11 @@
       }
       var repeat = hl7Repeats.value
       //var getMessage =  #server(dc.HL7v2Gen.GenMessage(mtype,ver))#;
-      var getMessage =  #server(dc.HL7v2Gen.GenerateMessageSamplePerVersion(ver,mtype,encChars,req,repeat))#; 
-    
+      try {
+        var getMessage =  #server(dc.HL7v2Gen.GenerateMessageSamplePerVersion(ver,mtype,encChars,req,repeat))#; 
+      } catch(err) {
+        console.log(err.stack);
+      }
 
       var selectElementGen = document.getElementById("hl7Message"); 
       selectElementGen.value = getMessage;
@@ -293,7 +296,7 @@
           alert("Please create or enter message first.");
           return; // Stop further execution
           }  
-    var getVal =  #server(..ValidateMessage(hl7mes))#;  
+    var getVal =  #server(dc.ValidateMessage.ValidateMessage(hl7mes))#;  
     var selectElementVal = document.getElementById("hl7MessageB"); 
     selectElementVal.value = getVal;
     this.blur()
@@ -559,13 +562,13 @@
         <form>
     <!-- First String Field -->
     <div class="form-group">
-      <label for="field1">*Host Name:</label>
+      <label for="hostName">*Host Name:</label>
       <input type="text" class="form-control" id="hostName" required>
     </div>
 
     <!-- Second String Field -->
     <div class="form-group">
-      <label for="field2">*Port:</label>
+      <label for="hostPort">*Port:</label>
       <input type="number" class="form-control" id="hostPort" required min="1" max="65535">
     </div>
     
