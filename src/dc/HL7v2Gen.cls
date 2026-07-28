@@ -33,345 +33,353 @@ ClassMethod GetTestVal(dataType = "", table = "", ver = "2.5") [ Language = pyth
 
     # Initialize Faker instance
     fake = Faker()
-    #Get the value from table values
-    if table:
-        # Get the values for the key
-        ##print(f":{TABLES[table][1]}:")
+    try:
+        #Get the value from table values
+        if table:
+            # Get the values for the key
+            ##print(f":{TABLES[table][1]}:")
 
-        if str(TABLES[table][1]) != "()":
-            table_values = TABLES[table][1]
-            return random.choice(table_values)
-        else:
-            ##print("Table not filled in")
-            return "E"
-    match dataType:
-        case "AD":
-            GeneratedDataType = iris.cls("kdc.GenerateDataType").GenerateAD(ver,charSep)
-        case "AUI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateAUI(ver,charSep)
-        case "BLG":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateBLG(ver,charSep)
-        case "CCD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCCD(ver,charSep)
-        case "CCP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCCP(ver,charSep)
-        case "CD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCD(ver,charSep)
-        case "CE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCE(ver,charSep)
-        case "CF":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCF(ver,charSep)
-        case "CK":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCK(ver,charSep)
-        case "CK_ACCOUNT_NO":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCKACCOUNTNO(ver,charSep)
-        case "CK_PAT_ID":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCKPATID(ver,charSep)
-        case "CM":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCM(ver,charSep)
-        case "CM_ABS_RANGE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMABSRANGE(ver,charSep)
-        case "CM_AUI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMAUI(ver,charSep)
-        case "CM_BATCH_TOTAL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMBATCHTOTAL(ver,charSep)
-        case "CM_CCD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMCCD(ver,charSep)
-        case "CM_CP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMCP(ver,charSep)
-        case "CM_CSU":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMCSU(ver,charSep)
-        case "CM_DDI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDDI(ver,charSep)
-        case "CM_DIN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDIN(ver,charSep)
-        case "CM_DLD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDLD(ver,charSep)
-        case "CM_DLT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDLT(ver,charSep)
-        case "CM_DTN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDTN(ver,charSep)
-        case "CM_EIP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMEIP(ver,charSep)
-        case "CM_ELD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMELD(ver,charSep)
-        case "CM_ELECTRODE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMELECTRODE(ver,charSep)
-        case "CM_FILLER":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMFILLER(ver,charSep)
-        case "CM_FINANCE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMFINANCE(ver,charSep)
-        case "CM_GROUP_ID":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMGROUPID(ver,charSep)
-        case "CM_INTERNAL_LOCATION":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMINTERNALLOCATION(ver,charSep)
-        case "CM_JOB_CODE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMJOBCODE(ver,charSep)
-        case "CM_LA1":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMLA1(ver,charSep)
-        case "CM_LICENSE_NO":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMLICENSENO(ver,charSep)
-        case "CM_MDV":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMMDV(ver,charSep)
-        case "CM_MOC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMMOC(ver,charSep)
-        case "CM_MSG":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMMSG(ver,charSep)
-        case "CM_NDL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMNDL(ver,charSep)
-        case "CM_OCD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMOCD(ver,charSep)
-        case "CM_OS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMOS(ver,charSep)
-        case "CM_OSP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMOSP(ver,charSep)
-        case "CM_PARENT_RESULT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPARENTRESULT(ver,charSep)
-        case "CM_PAT_ID":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPATID(ver,charSep)
-        case "CM_PAT_ID_0192":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPATID0192(ver,charSep)
-        case "CM_PCF":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPCF(ver,charSep)
-        case "CM_PEN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPEN(ver,charSep)
-        case "CM_PI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPI(ver,charSep)
-        case "CM_PIP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPIP(ver,charSep)
-        case "CM_PLACER":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPLACER(ver,charSep)
-        case "CM_PLN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPLN(ver,charSep)
-        case "CM_POSITION":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPOSITION(ver,charSep)
-        case "CM_PRACTITIONER":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPRACTITIONER(ver,charSep)
-        case "CM_PRL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPRL(ver,charSep)
-        case "CM_PTA":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPTA(ver,charSep)
-        case "CM_RANGE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRANGE(ver,charSep)
-        case "CM_RANGE_SIMPLE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRANGESIMPLE(ver,charSep)
-        case "CM_RFR":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRFR(ver,charSep)
-        case "CM_RI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRI(ver,charSep)
-        case "CM_RMC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRMC(ver,charSep)
-        case "CM_SPD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMSPD(ver,charSep)
-        case "CM_SPS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMSPS(ver,charSep)
-        case "CM_UVC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMUVC(ver,charSep)
-        case "CM_VR":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMVR(ver,charSep)
-        case "CM_WVI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMWVI(ver,charSep)
-        case "CN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCN(ver,charSep)
-        case "CN_PERSON":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNPERSON(ver,charSep)
-        case "CN_PHYSICIAN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNPHYSICIAN(ver,charSep)
-        case "CN_SIMPLE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNSIMPLE(ver,charSep)
-        case "CNS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNS(ver,charSep)
-        case "CNE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNE(ver,charSep)
-        case "CNN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNN(ver,charSep)
-        case "CP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCP(ver,charSep)
-        case "CQ":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCQ(ver,charSep)
-        case "CQ_QUANTITY":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCQQUANTITY(ver,charSep)
-        case "CQ_SIMPLE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCQSIMPLE(ver,charSep)
-        case "CSU":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCSU(ver,charSep)
-        case "CWE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCWE(ver,charSep)
-        case "CX":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCX(ver,charSep)
-        case "DDI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDDI(ver,charSep)
-        case "DIN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDIN(ver,charSep)
-        case "DLD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDLD(ver,charSep)
-        case "DLN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDLN(ver,charSep)
-        case "DLT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDLT(ver,charSep)
-        case "DR":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDR(ver,charSep)
-        case "DR_SIMPLE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDRSIMPLE(ver,charSep)
-        case "DT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDT(ver,charSep)
-        case "DTM":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDTM(ver,charSep)
-        case "DTN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDTN(ver,charSep)
-        case "ED":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateED(ver,charSep)
-        case "EI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateEI(ver,charSep)
-        case "EIP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateEIP(ver,charSep)
-        case "ELD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateELD(ver,charSep)
-        case "ERL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateERL(ver,charSep)
-        case "FC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateFC(ver,charSep)
-        case "FN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateFN(ver,charSep)
-        case "FT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateFT(ver,charSep)
-        case "GTS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateGTS(ver,charSep)
-        case "HD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateHD(ver,charSep)
-        case "ICD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateICD(ver,charSep)
-        case "ID":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateID(ver,charSep)
-        case "IS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateIS(ver,charSep)
-        case "JCC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateJCC(ver,charSep)
-        case "LA1":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateLA1(ver,charSep)
-        case "LA2":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateLA2(ver,charSep)
-        case "MA":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMA(ver,charSep)
-        case "MFI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMFI(ver,charSep)
-        case "MO":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMO(ver,charSep)
-        case "MOC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMOC(ver,charSep)
-        case "MOP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMOP(ver,charSep)
-        case "MSG":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMSG(ver,charSep)
-        case "NA":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNA(ver,charSep)
-        case "NDL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNDL(ver,charSep)
-        case "NM":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNM(ver,charSep)
-        case "NR":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNR(ver,charSep)
-        case "OCD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOCD(ver,charSep)
-        case "OG":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOG(ver,charSep)
-        case "OSD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOSD(ver,charSep)
-        case "OSP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOSP(ver,charSep)
-        case "PCF":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePCF(ver,charSep)
-        case "PI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePI(ver,charSep)
-        case "PIP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePIP(ver,charSep)
-        case "PL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePL(ver,charSep)
-        case "PLN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePLN(ver,charSep)
-        case "PN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePN(ver,charSep)
-        case "PPN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePPN(ver,charSep)
-        case "PRL":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePRL(ver,charSep)
-        case "PT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePT(ver,charSep)
-        case "PTA":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePTA(ver,charSep)
-        case "QIP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateQIP(ver,charSep)
-        case "QSC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateQSC(ver,charSep)
-        case "RCD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRCD(ver,charSep)
-        case "RFR":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRFR(ver,charSep)
-        case "RI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRI(ver,charSep)
-        case "RMC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRMC(ver,charSep)
-        case "RP":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRP(ver,charSep)
-        case "RPT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRPT(ver,charSep)
-        case "SAD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSAD(ver,charSep)
-        case "SCV":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSCV(ver,charSep)
-        case "SI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSI(ver,charSep)
-        case "SN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSN(ver,charSep)
-        case "SNM":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSNM(ver,charSep)
-        case "SPD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSPD(ver,charSep)
-        case "SPS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSPS(ver,charSep)
-        case "SRT":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSRT(ver,charSep)
-        case "ST":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateST(ver,charSep)
-        case "TM":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTM(ver,charSep)
-        case "TN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTN(ver,charSep)
-        case "TQ":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTQ(ver,charSep)
-        case "TS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTS(ver,charSep)
-        case "TX":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTX(ver,charSep)
-        case "TX_CHALLENGE":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTXCHALLENGE(ver,charSep)
-        case "UVC":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateUVC(ver,charSep)
-        case "VH":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateVH(ver,charSep)
-        case "VID":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateVID(ver,charSep)
-        case "VR":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateVR(ver,charSep)        
-        case "WVI":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateWVI(ver,charSep)
-        case "WVS":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateWVS(ver,charSep)
-        case "XAD":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXAD(ver,charSep)
-        case "XCN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXCN(ver,charSep)
-        case "XON":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXON(ver,charSep)
-        case "XPN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXPN(ver,charSep)
-        case "XTN":
-            GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXTN(ver,charSep)
-        case "_":
-            ##print("No matching datatypes")
-            GeneratedDataType = "A"
-        
-    return GeneratedDataType
+            if str(TABLES[table][1]) != "()":
+                table_values = TABLES[table][1]
+                return random.choice(table_values)
+            else:
+                ##print("Table not filled in")
+                return "E"
+        match dataType:
+            case "AD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateAD(ver,charSep)
+            case "AUI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateAUI(ver,charSep)
+            case "BLG":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateBLG(ver,charSep)
+            case "CCD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCCD(ver,charSep)
+            case "CCP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCCP(ver,charSep)
+            case "CD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCD(ver,charSep)
+            case "CE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCE(ver,charSep)
+            case "CF":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCF(ver,charSep)
+            case "CK":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCK(ver,charSep)
+            case "CK_ACCOUNT_NO":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCKACCOUNTNO(ver,charSep)
+            case "CK_PAT_ID":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCKPATID(ver,charSep)
+            case "CM":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCM(ver,charSep)
+            case "CM_ABS_RANGE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMABSRANGE(ver,charSep)
+            case "CM_AUI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMAUI(ver,charSep)
+            case "CM_BATCH_TOTAL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMBATCHTOTAL(ver,charSep)
+            case "CM_CCD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMCCD(ver,charSep)
+            case "CM_CP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMCP(ver,charSep)
+            case "CM_CSU":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMCSU(ver,charSep)
+            case "CM_DDI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDDI(ver,charSep)
+            case "CM_DIN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDIN(ver,charSep)
+            case "CM_DLD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDLD(ver,charSep)
+            case "CM_DLT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDLT(ver,charSep)
+            case "CM_DTN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMDTN(ver,charSep)
+            case "CM_EIP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMEIP(ver,charSep)
+            case "CM_ELD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMELD(ver,charSep)
+            case "CM_ELECTRODE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMELECTRODE(ver,charSep)
+            case "CM_FILLER":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMFILLER(ver,charSep)
+            case "CM_FINANCE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMFINANCE(ver,charSep)
+            case "CM_GROUP_ID":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMGROUPID(ver,charSep)
+            case "CM_INTERNAL_LOCATION":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMINTERNALLOCATION(ver,charSep)
+            case "CM_JOB_CODE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMJOBCODE(ver,charSep)
+            case "CM_LA1":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMLA1(ver,charSep)
+            case "CM_LICENSE_NO":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMLICENSENO(ver,charSep)
+            case "CM_MDV":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMMDV(ver,charSep)
+            case "CM_MOC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMMOC(ver,charSep)
+            case "CM_MSG":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMMSG(ver,charSep)
+            case "CM_NDL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMNDL(ver,charSep)
+            case "CM_OCD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMOCD(ver,charSep)
+            case "CM_OS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMOS(ver,charSep)
+            case "CM_OSP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMOSP(ver,charSep)
+            case "CM_PARENT_RESULT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPARENTRESULT(ver,charSep)
+            case "CM_PAT_ID":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPATID(ver,charSep)
+            case "CM_PAT_ID_0192":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPATID0192(ver,charSep)
+            case "CM_PCF":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPCF(ver,charSep)
+            case "CM_PEN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPEN(ver,charSep)
+            case "CM_PI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPI(ver,charSep)
+            case "CM_PIP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPIP(ver,charSep)
+            case "CM_PLACER":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPLACER(ver,charSep)
+            case "CM_PLN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPLN(ver,charSep)
+            case "CM_POSITION":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPOSITION(ver,charSep)
+            case "CM_PRACTITIONER":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPRACTITIONER(ver,charSep)
+            case "CM_PRL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPRL(ver,charSep)
+            case "CM_PTA":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMPTA(ver,charSep)
+            case "CM_RANGE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRANGE(ver,charSep)
+            case "CM_RANGE_SIMPLE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRANGESIMPLE(ver,charSep)
+            case "CM_RFR":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRFR(ver,charSep)
+            case "CM_RI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRI(ver,charSep)
+            case "CM_RMC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMRMC(ver,charSep)
+            case "CM_SPD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMSPD(ver,charSep)
+            case "CM_SPS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMSPS(ver,charSep)
+            case "CM_UVC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMUVC(ver,charSep)
+            case "CM_VR":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMVR(ver,charSep)
+            case "CM_WVI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCMWVI(ver,charSep)
+            case "CN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCN(ver,charSep)
+            case "CN_PERSON":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNPERSON(ver,charSep)
+            case "CN_PHYSICIAN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNPHYSICIAN(ver,charSep)
+            case "CN_SIMPLE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNSIMPLE(ver,charSep)
+            case "CNS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNS(ver,charSep)
+            case "CNE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNE(ver,charSep)
+            case "CNN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCNN(ver,charSep)
+            case "CP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCP(ver,charSep)
+            case "CQ":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCQ(ver,charSep)
+            case "CQ_QUANTITY":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCQQUANTITY(ver,charSep)
+            case "CQ_SIMPLE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCQSIMPLE(ver,charSep)
+            case "CSU":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCSU(ver,charSep)
+            case "CWE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCWE(ver,charSep)
+            case "CX":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateCX(ver,charSep)
+            case "DDI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDDI(ver,charSep)
+            case "DIN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDIN(ver,charSep)
+            case "DLD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDLD(ver,charSep)
+            case "DLN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDLN(ver,charSep)
+            case "DLT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDLT(ver,charSep)
+            case "DR":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDR(ver,charSep)
+            case "DR_SIMPLE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDRSIMPLE(ver,charSep)
+            case "DT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDT(ver,charSep)
+            case "DTM":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDTM(ver,charSep)
+            case "DTN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateDTN(ver,charSep)
+            case "ED":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateED(ver,charSep)
+            case "EI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateEI(ver,charSep)
+            case "EIP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateEIP(ver,charSep)
+            case "ELD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateELD(ver,charSep)
+            case "ERL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateERL(ver,charSep)
+            case "FC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateFC(ver,charSep)
+            case "FN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateFN(ver,charSep)
+            case "FT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateFT(ver,charSep)
+            case "GTS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateGTS(ver,charSep)
+            case "HD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateHD(ver,charSep)
+            case "ICD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateICD(ver,charSep)
+            case "ID":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateID(ver,charSep)
+            case "IS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateIS(ver,charSep)
+            case "JCC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateJCC(ver,charSep)
+            case "LA1":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateLA1(ver,charSep)
+            case "LA2":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateLA2(ver,charSep)
+            case "MA":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMA(ver,charSep)
+            case "MFI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMFI(ver,charSep)
+            case "MO":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMO(ver,charSep)
+            case "MOC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMOC(ver,charSep)
+            case "MOP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMOP(ver,charSep)
+            case "MSG":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateMSG(ver,charSep)
+            case "NA":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNA(ver,charSep)
+            case "NDL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNDL(ver,charSep)
+            case "NM":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNM(ver,charSep)
+            case "NR":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateNR(ver,charSep)
+            case "OCD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOCD(ver,charSep)
+            case "OG":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOG(ver,charSep)
+            case "OSD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOSD(ver,charSep)
+            case "OSP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateOSP(ver,charSep)
+            case "PCF":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePCF(ver,charSep)
+            case "PI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePI(ver,charSep)
+            case "PIP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePIP(ver,charSep)
+            case "PL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePL(ver,charSep)
+            case "PLN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePLN(ver,charSep)
+            case "PN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePN(ver,charSep)
+            case "PPN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePPN(ver,charSep)
+            case "PRL":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePRL(ver,charSep)
+            case "PT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePT(ver,charSep)
+            case "PTA":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GeneratePTA(ver,charSep)
+            case "QIP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateQIP(ver,charSep)
+            case "QSC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateQSC(ver,charSep)
+            case "RCD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRCD(ver,charSep)
+            case "RFR":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRFR(ver,charSep)
+            case "RI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRI(ver,charSep)
+            case "RMC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRMC(ver,charSep)
+            case "RP":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRP(ver,charSep)
+            case "RPT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateRPT(ver,charSep)
+            case "SAD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSAD(ver,charSep)
+            case "SCV":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSCV(ver,charSep)
+            case "SI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSI(ver,charSep)
+            case "SN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSN(ver,charSep)
+            case "SNM":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSNM(ver,charSep)
+            case "SPD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSPD(ver,charSep)
+            case "SPS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSPS(ver,charSep)
+            case "SRT":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateSRT(ver,charSep)
+            case "ST":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateST(ver,charSep)
+            case "TM":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTM(ver,charSep)
+            case "TN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTN(ver,charSep)
+            case "TQ":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTQ(ver,charSep)
+            case "TS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTS(ver,charSep)
+            case "TX":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTX(ver,charSep)
+            case "TX_CHALLENGE":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateTXCHALLENGE(ver,charSep)
+            case "UVC":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateUVC(ver,charSep)
+            case "VH":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateVH(ver,charSep)
+            case "VID":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateVID(ver,charSep)
+            case "VR":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateVR(ver,charSep)        
+            case "WVI":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateWVI(ver,charSep)
+            case "WVS":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateWVS(ver,charSep)
+            case "XAD":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXAD(ver,charSep)
+            case "XCN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXCN(ver,charSep)
+            case "XON":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXON(ver,charSep)
+            case "XPN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXPN(ver,charSep)
+            case "XTN":
+                GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXTN(ver,charSep)
+            case "_":
+                ##print("No matching datatypes")
+                GeneratedDataType = "A"
+            
+        return GeneratedDataType
+    except RuntimeError as e:
+        # Catches ObjectScript errors thrown by the IRIS engine
+        print(f"Caught an InterSystems IRIS error: {e}")
+        return None
+    except Exception as e:
+        print(f"Caught general exception: {e}")
+        return None
 }
 
 ClassMethod GetSegmentDetails(htmlString, segName, cardinality, segmentDefinition, ver = "2.5") [ Language = python ]
@@ -460,7 +468,7 @@ ClassMethod GetSegmentDetails(htmlString, segName, cardinality, segmentDefinitio
 ClassMethod GetHL7Structure(messgeType) [ Language = python ]
 {
 """
-    Core class to be used to construct the HL7 strcuture, used in creating the web page
+    Core class to be used to construct the HL7 structure
     
     Parms
     messageType: message type e.g ADT_A01, ORM_O01    
@@ -588,6 +596,7 @@ ClassMethod SendMessage(msgg, host, port) [ Language = python ]
     port : Host Port
 """
 import socket
+from datetime import datetime
 from hl7apy.parser import parse_message
 from hl7apy.core import Message
 
@@ -610,7 +619,7 @@ try:
     # Send the HL7 message
     sock.sendall(hl7_message.encode('utf-8'))
          
-    hl7_message = hl7_message + "   RETVAL HL7 message sent successfully!"
+    hl7_message = hl7_message + "   RETVAL"+ f"{datetime.now()} HL7 message sent successfully!"
 except socket.error as e:
     hl7_message = hl7_message + "   RETVAL"+ f"Socket error occurred: {e}"
 except socket.timeout as e:
@@ -709,6 +718,7 @@ ClassMethod GetListofTables(ver = "2.5") [ Language = python ]
 {
 import importlib, random
 import hl7apy as cr
+thislist = ""
 #Get HL7 version related library
 
 if ver in cr.SUPPORTED_LIBRARIES:      
@@ -742,6 +752,7 @@ ClassMethod GetListandValuesofTables(ver = "2.5") [ Language = python ]
 {
 import importlib, random
 import hl7apy as cr
+thislist = ""
 #Get HL7 version related library
 
 if ver in cr.SUPPORTED_LIBRARIES:      
@@ -781,6 +792,7 @@ ClassMethod GetListofDataTypes(ver = "2.5") [ Language = python ]
 {
 import importlib, random
 import hl7apy as cr
+thislist = ""
 #Get HL7 version related library
 
 if ver in cr.SUPPORTED_LIBRARIES:      
@@ -813,77 +825,6 @@ else:
     return 0
 }
 
-/// Test One specific data type per version a number of times
-ClassMethod TestOneDTPerVersionXtimes(ver = "2.5", datatype = "TS", numTimes = "1") [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    ## Get List of Data Types in this version to check if entered Data type exists
-    DTlist = iris.cls(__name__).GetListofDataTypes(ver)
-    ## Check
-    if datatype in DTlist:
-        print("Data type is correct")
-        for _ in range(int(numTimes)):
-            sampleDT = iris.cls(__name__).GetTestVal(datatype,'',ver)
-            print(f"datatype: {datatype} sampleDT: {sampleDT}")
-    else:
-        print(f"Data type is incorrect.  Try again using {DTlist}")
-}
-
-/// Test all Datatypes per version a number of times to make sure this code works in greater solution
-ClassMethod TestAllDTsPerVersionXtimes(ver = "2.5", numTimes = "1") [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    ## Get List of Data Types in this version to check if entered Data type exists
-    DTlist = iris.cls(__name__).GetListofDataTypes(ver)
-    print(DTlist)
-    with open('DatatypesTest.txt','w') as file:
-        file.write(str(DTlist))
-        file.write("\n")
-
-    for datatype in DTlist:
-        print(datatype)
-        with open('DatatypesTest.txt','a') as file:
-            file.write(str(datatype))
-            file.write("\n")
-        for _ in range(int(numTimes)):
-            sampleDT = iris.cls(__name__).GetTestVal(datatype,'',ver)
-            print(f"datatype: {datatype} sampleDT: {sampleDT}")
-            with open('DatatypesTest.txt','a') as file:
-                file.write(str(sampleDT))
-                file.write("\n")
-}
-
-/// Get all fields per ver
-ClassMethod GetAllFieldsPerVer(ver = "2.5") [ Language = python ]
-{
-    import iris,importlib
-    import hl7apy as cr
-    #Get HL7 version related library
-    if ver in cr.SUPPORTED_LIBRARIES:      
-        message_with_descriptions = []
-        module_name = cr.SUPPORTED_LIBRARIES[ver]
-        lib = importlib.import_module(module_name)
-        #get segment reference
-        try:
-            FIELDS = lib.fields.FIELDS
-        except:
-            FIELDS = {}
-        ##print(FIELDS)
-        itera = 0
-        for x in FIELDS:
-            if itera==0:
-                FIELDSlist = x
-                itera = itera + 1
-            else:
-                FIELDSlist = FIELDSlist +","+x
-        ##print(FIELDSlist)
-        return FIELDSlist
-}
-
 /// Generate a field for a version
 ClassMethod GenerateFieldPerVersion(ver = "2.5", field = "MSH_9") [ Language = python ]
 {
@@ -903,101 +844,6 @@ ClassMethod GenerateFieldPerVersion(ver = "2.5", field = "MSH_9") [ Language = p
         sample = iris.cls(__name__).GetTestVal(dictionary[2])
         ##print(sample)
         return sample
-}
-
-/// Get all fields per ver
-ClassMethod TestAllFieldsPerVer(ver = "2.5") [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    listoffields = iris.cls(__name__).GetAllFieldsPerVer(ver).split(separator)
-    print(listoffields)
-    with open('FieldTest.txt','w') as file:
-        file.write(str(listoffields))
-        file.write("\n")
-
-    for field in listoffields:
-        print(field)
-        with open('FieldTest.txt','a') as file:
-            file.write(str(field))
-            file.write("\n")
-        sample = iris.cls(__name__).GenerateFieldPerVersion(ver,field)
-        print(f"field: {field} sample: {sample}")
-        with open('FieldTest.txt','a') as file:
-            file.write(str(sample))
-            file.write("\n")
-}
-
-/// Get all fields per ver
-ClassMethod TestOneFieldPerVersionXtimes(ver = "2.5", fieldname = "ABS_4", numTimes = "5") [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    ## Get List of fields in this version to check if entered Field Name exists
-    listoffields = iris.cls(__name__).GetAllFieldsPerVer(ver).split(separator)
-    ## Check
-    if fieldname in listoffields:
-        print("Field name is correct")
-        for _ in range(int(numTimes)):
-            sampleField = iris.cls(__name__).GenerateFieldPerVersion(ver, fieldname)
-            print(f"Field: {fieldname} sampleField: {sampleField}")
-
-    else:
-        print(f"Field name is incorrect.  Try again using {listoffields}")
-}
-
-/// Test all Fields per version a number of times to make sure this code works in greater solution
-ClassMethod TestAllFieldsPerVersionXtimes(ver = "2.5", numTimes = "1") [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    listoffields = iris.cls(__name__).GetAllFieldsPerVer(ver).split(separator)
-    print(listoffields)
-    with open('FieldTest.txt','w') as file:
-        file.write(str(listoffields))
-        file.write("\n")
-
-    for field in listoffields:
-        print(field)
-        with open('FieldTest.txt','a') as file:
-            file.write(str(field))
-            file.write("\n")
-        for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateFieldPerVersion(ver,field)
-            print(f"field: {field} sample: {sample}")
-            with open('FieldTest.txt','a') as file:
-                file.write(str(sample))
-                file.write("\n")
-}
-
-/// Get a list of All Segments Per Version
-ClassMethod GetAllSegmentsPerVersion(ver = "2.5") As %Status [ Language = python ]
-{
-    import iris,importlib
-    import hl7apy as cr
-    #Get HL7 version related library
-    if ver in cr.SUPPORTED_LIBRARIES:      
-        message_with_descriptions = []
-        module_name = cr.SUPPORTED_LIBRARIES[ver]
-        lib = importlib.import_module(module_name)
-        #get segment reference
-        try:
-            SEGMENTS = lib.segments.SEGMENTS
-        except:
-            SEGMENTS = {}
-        #loop through SEGMENTS from hl7apy
-        itera = 0
-        for keys, values in SEGMENTS.items():
-            ##print(keys)
-            if itera == 0:
-                SegmentList = keys
-                itera = itera +1
-            else:
-                SegmentList = SegmentList + "," + keys
-    return SegmentList
 }
 
 /// Generate Segment Sample Per Version
@@ -1093,109 +939,6 @@ ClassMethod GenerateSegmentSamplePerVersion(ver = "2.5", segment = "ABS", charSe
                         
         segmentSample = segmentSample + "\r\n"
         return segmentSample
-}
-
-/// Test All Segments Per Version
-ClassMethod TestAllSegmentsPerVersion(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1) As %Status [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    listofsegments = iris.cls(__name__).GetAllSegmentsPerVersion(ver).split(separator)
-    print(listofsegments)
-    with open('SegmentTest.txt','w') as file:
-        file.write(str(listofsegments))
-        file.write("\n")
-
-    for segment in listofsegments:
-        print(segment)
-        with open('SegmentTest.txt','a') as file:
-            file.write(str(segment))
-            file.write("\n")
-        if segment=="MSH":
-            sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
-        else:
-            sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
-        print(f"segment: {segment} sample: {sample}")
-        with open('SegmentTest.txt','a') as file:
-            file.write(str(sample))
-            file.write("\n")
-}
-
-/// Test One Segments Per Version x times
-ClassMethod TestOneSegmentsPerVersionXtimes(ver = "2.5", segment = "EVN", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    listofsegments = iris.cls(__name__).GetAllSegmentsPerVersion(ver).split(separator)
-    if segment in listofsegments:
-        print("Segment is correct")
-        for _ in range(int(numTimes)):
-            ## if MSH then need to send what is going in MSH:9
-            if segment=="MSH":
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
-            else:
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
-            print(sample)
-    else:
-        print(f"Segment not found in this {ver}.  Try again using {listofsegments}")
-}
-
-/// Test All Segments Per Version x times
-ClassMethod TestAllSegmentsPerVersionXtimes(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    listofsegments = iris.cls(__name__).GetAllSegmentsPerVersion(ver).split(separator)
-    print(listofsegments)
-    filename = "SegmentTest_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
-    print(filename)
-    with open(filename,'w') as file:
-        file.write(str(listofsegments))
-        file.write("\n")
-
-    for segment in listofsegments:
-        with open(filename,'a') as file:
-            file.write(str(segment))
-            file.write("\n")
-        for _ in range(int(numTimes)):
-            ## if MSH then need to send what is going in MSH:9
-            if segment=="MSH":
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
-            else:
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
-            with open(filename,'a') as file:
-                file.write(str(sample))
-                file.write("\n")
-}
-
-/// Get a list of All Groups Per Version
-ClassMethod GetAllGroupsPerVersion(ver = "2.5") As %Status [ Language = python ]
-{
-    import iris,importlib
-    import hl7apy as cr
-    #Get HL7 version related library
-    if ver in cr.SUPPORTED_LIBRARIES:      
-        message_with_descriptions = []
-        module_name = cr.SUPPORTED_LIBRARIES[ver]
-        lib = importlib.import_module(module_name)
-        #get segment reference
-        try:
-            GROUPS = lib.groups.GROUPS
-        except:
-            GROUPS = {}
-        #loop through Groups from hl7apy
-        itera = 0
-        for keys, values in GROUPS.items():
-            ##print(keys)
-            if itera == 0:
-                GroupList = keys
-                itera = itera +1
-            else:
-                GroupList = GroupList + "," + keys
-    return GroupList
 }
 
 /// Generate Group Sample Per Version
@@ -1359,64 +1102,6 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
     return groupSample
 }
 
-/// Test All Groups Per Version
-ClassMethod TestAllGroupsPerVersion(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1) As %Status [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    ## get a list of groups for the version
-    listofgroups = iris.cls(__name__).GetAllGroupsPerVersion(ver).split(separator)
-    print(listofgroups)
-
-    for group in listofgroups:
-        print(f"Group Name: {group}")
-        sample = iris.cls(__name__).GenerateGroupSamplePerVersion(ver,group,charSep,required,repeat)
-        print(f"group: {group} sample: {sample}")
-}
-
-/// Test One Group Per Version X times
-ClassMethod TestOneGroupsPerVersionXtimes(ver = "2.5", Group = "ADT_A01_INSURANCE", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    ## get a list of groups for the version
-    listofgroups = iris.cls(__name__).GetAllGroupsPerVersion(ver).split(separator)
-    if Group in listofgroups:
-        print("Group is correct")
-        for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateGroupSamplePerVersion(ver,Group,charSep,required,repeat)
-            print(f"Group: {Group} sample: {sample}")
-    else:
-        print(f"Group isn't in version.  Try again using {listofgroups}")
-}
-
-/// Test All Groups Per Version x times
-ClassMethod TestAllGroupsPerVersionXtimes(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
-{
-    import iris
-    import hl7apy as cr
-    separator = ","
-    ## get a list of groups for the version
-    listofgroups = iris.cls(__name__).GetAllGroupsPerVersion(ver).split(separator)
-    print(listofgroups)
-    filename = "GroupTest_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
-    print(filename)
-    with open(filename,'w') as file:
-        file.write(str(listofgroups))
-        file.write("\n")
-
-    for group in listofgroups:
-        with open(filename,'a') as file:
-            file.write(str(group))
-            file.write("\n")
-        for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateGroupSamplePerVersion(ver,group,charSep,required,repeat)
-            with open(filename,'a') as file:
-                file.write(str(sample))
-                file.write("\n")
-}
 
 /// Get a list of All Messages Per Version
 ClassMethod GetAllMessagessPerVersion(ver = "2.5") As %Status [ Language = python ]
@@ -1445,6 +1130,10 @@ ClassMethod GetAllMessagessPerVersion(ver = "2.5") As %Status [ Language = pytho
                 MESSAGESList = MESSAGESList + "," + keys
     return MESSAGESList
 }
+
+
+
+
 
 /// Generate Message Sample Per Version
 ClassMethod GenerateMessageSamplePerVersion(ver = "2.5", Message = "ADT_A01", charSep = "|^~\&", required = 1, repeat = 1) As %Status [ Language = python ]
@@ -1616,127 +1305,6 @@ ClassMethod GenerateMessageSamplePerVersion(ver = "2.5", Message = "ADT_A01", ch
     ##print(f"er7message: {er7message}")
 
     return messageSample
-}
-
-/// TestAllMessagesPerVersion
-ClassMethod TestAllMessagesPerVersion(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1) As %Status [ Language = python ]
-{
-    import iris
-    sc = "1"
-    MessagesPerVersion = iris.cls(__name__).GetMessageTypes(ver)
-    separator1 = "|"
-    ReformattedMessages = MessagesPerVersion.split(separator1)
-    print(ReformattedMessages)
-    filename = "MessagesTest_" + str(required) + "_" + str(repeat) + ".txt"
-    with open(filename,'w') as file:
-        file.write(str(ReformattedMessages))
-        file.write("\n")
-    for x in ReformattedMessages:
-        print(x)
-        separator2 = "-"
-        y = x.split(separator2)
-        messageType = y[0]
-        print(f"message subscript to look for: {messageType}")
-        with open(filename,'a') as file:
-            file.write(str(messageType))
-            file.write("\n")
-        sample = iris.cls(__name__).GenerateMessageSamplePerVersion(ver,messageType,charSep,required,repeat)
-        print(sample)
-        with open(filename,'a') as file:
-            file.write(str(sample))
-            file.write("\n\n")
-    return sc
-}
-
-/// TestAllMessagesPerVersion X times
-ClassMethod TestAllMessagesPerVersionXtimes(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
-{
-    import iris
-    sc = "1"
-    MessagesPerVersion = iris.cls(__name__).GetMessageTypes(ver)
-    separator1 = "|"
-    ReformattedMessages = MessagesPerVersion.split(separator1)
-    print(ReformattedMessages)
-    filename = "MessagesTest_" + str(required) + "_" + str(repeat) + ".txt"
-    with open(filename,'w') as file:
-        file.write(str(ReformattedMessages))
-        file.write("\n")
-    for x in ReformattedMessages:
-        print(x)
-        separator2 = "-"
-        y = x.split(separator2)
-        messageType = y[0]
-        with open(filename,'a') as file:
-            file.write(str(messageType))
-            file.write("\n")
-        for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateMessageSamplePerVersion(ver,messageType,charSep,required,repeat)
-            with open(filename,'a') as file:
-                file.write(str(sample))
-                file.write("\n\n")
-    print(filename)
-    return sc
-}
-
-/// Test all messages for all versions
-ClassMethod TestAllMessagesAllVersions() As %Status
-{
-    Set sc = $$$OK
-    // do something
-    set list = "2.1,2.2,2.3,2.3.1,2.4,2.5,2.5.1,2.6,2.7,2.8,2.8.1,2.8.2"
-    set delimiter = ","
-    set i = 1
-    While $PIECE(list, delimiter, i)'="" {
-        Set item = $PIECE(list, delimiter, i)
-        Write item, !
-        do ..TestAllMessagesPerVersion(item)
-        Set i = i + 1
-    }
-        
-    Return sc
-}
-
-/// Test Gen and Send
-ClassMethod TestGenSend(ver = "2.5", messageType="ADT_A01", charSep = "|^~\&", required = 1, repeat = 1) As %Status [ Language = python ]
-{
-    import iris
-    hl7message=iris.cls(__name__).GenerateMessageSamplePerVersion(ver,messageType,charSep,required,repeat)
-    print(f"hl7message: {hl7message}")
-    results=iris.cls(__name__).SendMessage(hl7message,"localhost","7878")
-    print(f"result: {results}")
-}
-
-/// SendAllMessagesPerVersion X times
-ClassMethod SendAllMessagesPerVersionXtimes(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1", host = "127.0.0.1", port = "7878") As %Status [ Language = python ]
-{
-    import iris
-    sc = "1"
-    MessagesPerVersion = iris.cls(__name__).GetMessageTypes(ver)
-    separator1 = "|"
-    ReformattedMessages = MessagesPerVersion.split(separator1)
-    print(ReformattedMessages)
-    filename = "MessagesTest_" + str(ver) +"_"+ str(required) + "_" + str(repeat) + ".txt"
-    with open(filename,'w') as file:
-        file.write(str(ReformattedMessages))
-        file.write("\n")
-    for x in ReformattedMessages:
-        print(x)
-        separator2 = "-"
-        y = x.split(separator2)
-        messageType = y[0]
-        with open(filename,'a') as file:
-            file.write(str(messageType))
-            file.write("\n")
-        for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateMessageSamplePerVersion(ver,messageType,charSep,required,repeat)
-            print(f"sample: {sample}")
-            results=iris.cls(__name__).SendMessage(sample,host,port)
-            print(f"result: {results}")
-            with open(filename,'a') as file:
-                file.write(str(sample))
-                file.write("\n\n")
-    print(filename)
-    return sc
 }
 
 }
