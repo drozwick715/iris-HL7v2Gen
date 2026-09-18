@@ -1,0 +1,40 @@
+services:
+  iris:
+    image:  ${IRISTAG}
+    container_name: iris-server
+    restart: always
+    ports:
+      - "1972:1972"   # Superserver port (ObjectScript / JDBC / ODBC)
+    environment:
+      - ISC_DATA_DIRECTORY=/durable/iris # Path for Durable %SYS configuration
+    volumes:
+      - type: bind
+        source: ${VOLUME}/iris/durable
+        target: /durable
+      - type: bind
+        source: ${VOLUME}/iris
+        target: /files 
+
+    command: --key /files/iris.key 
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+
+  webgateway:
+    image:  ${WEBGTAG}
+    container_name: iris-webgateway
+    restart: always
+    ports:
+      - "8080:80"       # External HTTP port  host port: container port
+      - "8443:443"     # External HTTPS port
+
+    volumes:
+      - ${VOLUME}/webgateway/CSP.ini:/opt/webgateway/bin/CSP.ini
+      - ${VOLUME}/webgateway/CSP.conf:/etc/apache2/mods-available/CSP.conf
+    depends_on:
+      - iris
+
+volumes:
+  iris-durable:
+    driver: local

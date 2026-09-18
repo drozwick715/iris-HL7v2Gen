@@ -1,26 +1,18 @@
 {
-  "files.associations": {
-  
-      "Dockerfile*": "dockerfile",
-      "iris.script": "objectscript"
+    "objectscript.conn": {
+        "server": "hl7v2gen",
+        "ns": "USER",
+        "active": true
     },
-  "objectscript.conn" :{
-    "ns": "USER",
-    "username": "SuperUser",
-    "password": "SYS",
-    "docker-compose": {
-      "service": "iris",
-      "internalPort": 52773
-    },
-    "links": {
-      "Web Application": "http://localhost:32783/csp/fhirlab/index.csp"
-    },
-    "active": true,
-    "server": "local"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.autopep8"
-  },
-  "python.formatting.provider": "none"
-
+    "intersystems.servers": {
+        "hl7v2gen": {
+            "webServer": {
+                "scheme": "http",
+                "host": "localhost",
+                "port": 52773,
+                "pathPrefix": ""
+            },
+            "username": "_SYSTEM"
+        }
+    }
 }

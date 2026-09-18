@@ -1,0 +1,6 @@
+[config]
+globals=0,0,400,0,0,0
+[Actions]
+CreateResource:Name=%DB_WORKBENCH,Description="Workbench database"
+CreateDatabase:Name=WORKBENCH,Directory=/data/workbench
+CreateNamespace:Name=WORKBENCH,Globals=WORKBENCH,Interop=1

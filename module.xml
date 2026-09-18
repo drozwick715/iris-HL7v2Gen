@@ -21,8 +21,7 @@
         MatchRoles=":{$globalsDbRole}" 
         PasswordAuthEnabled="1"
         UnauthenticatedEnabled="0"
-       />    
-    
+    />
     </Module>
   </Document>
 </Export>

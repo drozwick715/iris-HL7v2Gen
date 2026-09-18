@@ -6,12 +6,12 @@ ClassMethod TestOneDTPerVersionXtimes(ver = "2.5", datatype = "TS", numTimes = "
     import hl7apy as cr
     separator = ","
     ## Get List of Data Types in this version to check if entered Data type exists
-    DTlist = iris.cls(__name__).GetListofDataTypes(ver)
+    DTlist = iris.cls("dc.HL7v2Gen").GetListofDataTypes(ver)
     ## Check
     if datatype in DTlist:
         print("Data type is correct")
         for _ in range(int(numTimes)):
-            sampleDT = iris.cls(__name__).GetTestVal(datatype,'',ver)
+            sampleDT = iris.cls("dc.HL7v2Gen").GenerateTestType(datatype,'',ver)
             print(f"datatype: {datatype} sampleDT: {sampleDT}")
     else:
         print(f"Data type is incorrect.  Try again using {DTlist}")
@@ -24,7 +24,7 @@ ClassMethod TestAllDTsPerVersionXtimes(ver = "2.5", numTimes = "1") [ Language =
     import hl7apy as cr
     separator = ","
     ## Get List of Data Types in this version to check if entered Data type exists
-    DTlist = iris.cls(__name__).GetListofDataTypes(ver)
+    DTlist = iris.cls("dc.HL7v2Gen").GetListofDataTypes(ver)
     print(DTlist)
     with open('DatatypesTest.txt','w') as file:
         file.write(str(DTlist))
@@ -36,7 +36,7 @@ ClassMethod TestAllDTsPerVersionXtimes(ver = "2.5", numTimes = "1") [ Language =
             file.write(str(datatype))
             file.write("\n")
         for _ in range(int(numTimes)):
-            sampleDT = iris.cls(__name__).GetTestVal(datatype,'',ver)
+            sampleDT = iris.cls("dc.HL7v2Gen").GenerateTestType(datatype,'',ver)
             print(f"datatype: {datatype} sampleDT: {sampleDT}")
             with open('DatatypesTest.txt','a') as file:
                 file.write(str(sampleDT))
@@ -71,7 +71,7 @@ ClassMethod GetAllFieldsPerVer(ver = "2.5") [ Language = python ]
 }
 
 
-/// Get all fields per ver
+/// Test all fields per version
 ClassMethod TestAllFieldsPerVer(ver = "2.5") [ Language = python ]
 {
     import iris
@@ -88,7 +88,7 @@ ClassMethod TestAllFieldsPerVer(ver = "2.5") [ Language = python ]
         with open('FieldTest.txt','a') as file:
             file.write(str(field))
             file.write("\n")
-        sample = iris.cls(__name__).GenerateFieldPerVersion(ver,field)
+        sample = iris.cls("dc.HL7v2Gen").GenerateFieldPerVersion(ver,field)
         print(f"field: {field} sample: {sample}")
         with open('FieldTest.txt','a') as file:
             file.write(str(sample))
@@ -107,7 +107,7 @@ ClassMethod TestOneFieldPerVersionXtimes(ver = "2.5", fieldname = "ABS_4", numTi
     if fieldname in listoffields:
         print("Field name is correct")
         for _ in range(int(numTimes)):
-            sampleField = iris.cls(__name__).GenerateFieldPerVersion(ver, fieldname)
+            sampleField = iris.cls("dc.HL7v2Gen").GenerateFieldPerVersion(ver, fieldname)
             print(f"Field: {fieldname} sampleField: {sampleField}")
 
     else:
@@ -132,7 +132,7 @@ ClassMethod TestAllFieldsPerVersionXtimes(ver = "2.5", numTimes = "1") [ Languag
             file.write(str(field))
             file.write("\n")
         for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateFieldPerVersion(ver,field)
+            sample = iris.cls("dc.HL7v2Gen").GenerateFieldPerVersion(ver,field)
             print(f"field: {field} sample: {sample}")
             with open('FieldTest.txt','a') as file:
                 file.write(str(sample))
@@ -239,7 +239,7 @@ ClassMethod GenerateSegmentSamplePerVersion(ver = "2.5", segment = "ABS", charSe
                                 while repeatcounter >0:
                                     ##print("here")
                                     try:
-                                        segmentfieldSample = iris.cls(__name__).GenerateFieldPerVersion(ver,value2[0])
+                                        segmentfieldSample = iris.cls("dc.HL7v2Gen").GenerateFieldPerVersion(ver,value2[0])
                                     except:
                                         segmentfieldSample = ""
                                         ##print("failed")
@@ -250,7 +250,7 @@ ClassMethod GenerateSegmentSamplePerVersion(ver = "2.5", segment = "ABS", charSe
                             else:
                                 ##print(f"1 repeat")
                                 try:
-                                    segmentfieldSample = iris.cls(__name__).GenerateFieldPerVersion(ver,value2[0])
+                                    segmentfieldSample = iris.cls("dc.HL7v2Gen").GenerateFieldPerVersion(ver,value2[0])
                                 except:
                                     segmentfieldSample = ""
                                 ##print(segmentfieldSample)
@@ -279,9 +279,9 @@ ClassMethod TestAllSegmentsPerVersion(ver = "2.5", charSep = "|^~\&", required =
             file.write(str(segment))
             file.write("\n")
         if segment=="MSH":
-            sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
+            sample = iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
         else:
-            sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
+            sample = iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
         print(f"segment: {segment} sample: {sample}")
         with open('SegmentTest.txt','a') as file:
             file.write(str(sample))
@@ -300,9 +300,9 @@ ClassMethod TestOneSegmentsPerVersionXtimes(ver = "2.5", segment = "EVN", charSe
         for _ in range(int(numTimes)):
             ## if MSH then need to send what is going in MSH:9
             if segment=="MSH":
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
+                sample = iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
             else:
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
+                sample = iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
             print(sample)
     else:
         print(f"Segment not found in this {ver}.  Try again using {listofsegments}")
@@ -329,9 +329,9 @@ ClassMethod TestAllSegmentsPerVersionXtimes(ver = "2.5", charSep = "|^~\&", requ
         for _ in range(int(numTimes)):
             ## if MSH then need to send what is going in MSH:9
             if segment=="MSH":
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
+                sample = iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"ADT_A19")
             else:
-                sample = iris.cls(__name__).GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
+                sample = iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver,segment,charSep,required,repeat,"")
             with open(filename,'a') as file:
                 file.write(str(sample))
                 file.write("\n")
@@ -414,7 +414,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                     ## loop through 
                     while repeatcounter >0:
                         ## get sample Segment
-                        sample = str(iris.cls(__name__).GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
+                        sample = str(iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
                         ## if first time through then set groupSample to sample else append sample to groupSample
                         if itera == 0:
                             groupSample = sample
@@ -425,7 +425,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                 ## repeat one time
                 else:
                     ## get sample Segment
-                    sample = str(iris.cls(__name__).GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
+                    sample = str(iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
                     ## if first time through then set groupSample to sample else append sample to groupSample
                     if itera == 0:
                         groupSample = sample
@@ -441,7 +441,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                     ## loop through 
                     while repeatcounter >0:
                         ## if first time through then set groupSample to sample else append sample to groupSample
-                        sample = str(iris.cls(__name__).GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
+                        sample = str(iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
                         ## if first time through then set groupSample to sample else append sample to groupSample
                         if itera == 0:
                             groupSample = sample
@@ -451,7 +451,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                         repeatcounter -=1
                 else:
                     ## if first time through then set groupSample to sample else append sample to groupSample
-                    sample = str(iris.cls(__name__).GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
+                    sample = str(iris.cls("dc.HL7v2Gen").GenerateSegmentSamplePerVersion(ver, item[0], charSep,required,repeat,MSH9))
                     ## if first time through then set groupSample to sample else append sample to groupSample
                     if itera == 0:
                         groupSample = sample
@@ -476,7 +476,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                     ## loop through
                     while repeatcounter >0:
                         ## get group sample
-                        sample = str(iris.cls(__name__).GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
+                        sample = str(iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
                         ## if first time through then set groupSample to sample else append sample to groupSample
                         if itera == 0:
                             groupSample = sample
@@ -487,7 +487,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                 ## else repeat only one time
                 else:
                     ## get group sample
-                    sample = str(iris.cls(__name__).GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
+                    sample = str(iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
                     ## if first time through then set groupSample to sample else append sample to groupSample
                     if itera == 0:
                         groupSample = sample
@@ -503,7 +503,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                     ## loop through
                     while repeatcounter >0:
                         ## get group sample
-                        sample = str(iris.cls(__name__).GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
+                        sample = str(iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
                         ## if first time through then set groupSample to sample else append sample to groupSample
                         if itera == 0:
                             groupSample = sample
@@ -515,7 +515,7 @@ ClassMethod GenerateGroupSamplePerVersion(ver = "2.5", Group = "ADT_A01_INSURANC
                 ## repeat only 1 time
                 else:
                     ## get group sample
-                    sample = str(iris.cls(__name__).GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
+                    sample = str(iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver, item[0], charSep, required, repeat))
                     ##print(f"Segment: {item[0]} Sample: {sample}")
                     if itera == 0:
                         groupSample = sample
@@ -537,7 +537,7 @@ ClassMethod TestAllGroupsPerVersion(ver = "2.5", charSep = "|^~\&", required = 1
 
     for group in listofgroups:
         print(f"Group Name: {group}")
-        sample = iris.cls(__name__).GenerateGroupSamplePerVersion(ver,group,charSep,required,repeat)
+        sample = iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver,group,charSep,required,repeat)
         print(f"group: {group} sample: {sample}")
 }
 
@@ -552,7 +552,7 @@ ClassMethod TestOneGroupsPerVersionXtimes(ver = "2.5", Group = "ADT_A01_INSURANC
     if Group in listofgroups:
         print("Group is correct")
         for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateGroupSamplePerVersion(ver,Group,charSep,required,repeat)
+            sample = iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver,Group,charSep,required,repeat)
             print(f"Group: {Group} sample: {sample}")
     else:
         print(f"Group isn't in version.  Try again using {listofgroups}")
@@ -578,7 +578,7 @@ ClassMethod TestAllGroupsPerVersionXtimes(ver = "2.5", charSep = "|^~\&", requir
             file.write(str(group))
             file.write("\n")
         for _ in range(int(numTimes)):
-            sample = iris.cls(__name__).GenerateGroupSamplePerVersion(ver,group,charSep,required,repeat)
+            sample = iris.cls("dc.HL7v2Gen").GenerateGroupSamplePerVersion(ver,group,charSep,required,repeat)
             with open(filename,'a') as file:
                 file.write(str(sample))
                 file.write("\n")
@@ -695,40 +695,73 @@ ClassMethod TestGenSend() As %Status [ Language = python ]
     import iris
     hl7message=iris.cls("dc.HL7v2Gen").GenerateMessageSamplePerVersion("2.5","ADT_A01","|^~\&",1,1)
     print(f"hl7message: {hl7message}")
-    results=iris.cls("dc.HL7v2Gen").SendMessage(hl7message,"localhost","7878")
+    results=iris.cls("dc.Sender").SendMessage(hl7message,"localhost","7878")
+    print(f"result: {results}")
+}
+
+/// Test Gen and Send 2
+ClassMethod TestHL7Sender() As %Status [ Language = python ]
+{
+    import iris
+    hl7message=iris.cls("dc.HL7v2Gen").GenerateMessageSamplePerVersion("2.5","ADT_A01","|^~\&",1,1)
+    print(f"hl7message: {hl7message}")
+    results=iris.cls("dc.Sender").HL7Sender(hl7message)
     print(f"result: {results}")
 }
 
 /// SendAllMessagesPerVersion X times
 ClassMethod SendAllMessagesPerVersionXtimes(ver = "2.5", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1", host = "127.0.0.1", port = "7878") As %Status [ Language = python ]
-{
-    import iris
-    sc = "1"
-    MessagesPerVersion = iris.cls("dc.HL7v2Gen").GetMessageTypes(ver)
-    separator1 = "|"
-    ReformattedMessages = MessagesPerVersion.split(separator1)
-    print(ReformattedMessages)
-    filename = "MessagesTest_" + str(ver) +"_"+ str(required) + "_" + str(repeat) + ".txt"
-    with open(filename,'w') as file:
-        file.write(str(ReformattedMessages))
-        file.write("\n")
-    for x in ReformattedMessages:
-        print(x)
-        separator2 = "-"
-        y = x.split(separator2)
-        messageType = y[0]
-        with open(filename,'a') as file:
-            file.write(str(messageType))
+    {
+        import iris
+        sc = "1"
+        MessagesPerVersion = iris.cls("dc.HL7v2Gen").GetMessageTypes(ver)
+        separator1 = "|"
+        ReformattedMessages = MessagesPerVersion.split(separator1)
+        print(ReformattedMessages)
+        filename = "MessagesTest_" + str(ver) +"_"+ str(required) + "_" + str(repeat) + ".txt"
+        with open(filename,'w') as file:
+            file.write(str(ReformattedMessages))
             file.write("\n")
-        for _ in range(int(numTimes)):
-            sample = iris.cls("dc.HL7v2Gen").GenerateMessageSamplePerVersion(ver,messageType,charSep,required,repeat)
-            print(f"sample: {sample}")
-            results=iris.cls("dc.HL7v2Gen").SendMessage(sample,host,port)
-            print(f"result: {results}")
+        for x in ReformattedMessages:
+            print(x)
+            separator2 = "-"
+            y = x.split(separator2)
+            messageType = y[0]
             with open(filename,'a') as file:
-                file.write(str(sample))
-                file.write("\n\n")
-    print(filename)
-    return sc
-}
+                file.write(str(messageType))
+                file.write("\n")
+            for _ in range(int(numTimes)):
+                sample = iris.cls("dc.HL7v2Gen").GenerateMessageSamplePerVersion(ver,messageType,charSep,required,repeat)
+                print(f"sample: {sample}")
+                results=iris.cls("dc.Sender").SendMessage(sample,host,port)
+                print(f"result: {results}")
+                with open(filename,'a') as file:
+                    file.write(str(sample))
+                    file.write("\n\n")
+        print(filename)
+        return sc
+    }
+/// Description
+ClassMethod MethodName() As %Status [ Language = python ]
+    {
+        import asyncio
+
+        async def tcp_echo_client(message):
+            reader, writer = await asyncio.open_connection(
+                '127.0.0.1', 7878)
+
+            print(f'Send: {message!r}')
+            writer.write(message.encode())
+            await writer.drain()
+
+            data = await reader.read(100)
+            print(f'Received: {data.decode()!r}')
+
+            print('Close the connection')
+            writer.close()
+            await writer.wait_closed()
+
+        asyncio.run(tcp_echo_client('Hello World!'))
+    }
+
 }

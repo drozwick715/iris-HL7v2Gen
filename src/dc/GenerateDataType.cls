@@ -3636,7 +3636,7 @@ ClassMethod GenerateQIP(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     # Segment Field Name
     separator = ","
-    listoffields = iris.cls(__name__).GetAllFieldsPerVer(ver).split(separator)
+    listoffields = iris.cls("dc.Tests").GetAllFieldsPerVer(ver).split(separator)
     # random
     fieldname=random.choice(listoffields)
     SegmentFieldName = escapeseq + fieldname.replace("_",".")
@@ -3686,7 +3686,7 @@ ClassMethod GenerateQSC(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     # Segment Field Name
     separator = ","
-    listoffields = iris.cls(__name__).GetAllFieldsPerVer(ver).split(separator)
+    listoffields = iris.cls("dc.Tests").GetAllFieldsPerVer(ver).split(separator)
     # random
     fieldname=random.choice(listoffields)
     SegmentFieldName = escapeseq + fieldname.replace("_",".")
@@ -3746,7 +3746,7 @@ ClassMethod GenerateRCD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     # Segment Field Name
     separator = ","
-    listoffields = iris.cls(__name__).GetAllFieldsPerVer(ver).split(separator)
+    listoffields = iris.cls("dc.Tests").GetAllFieldsPerVer(ver).split(separator)
     # random
     fieldname=random.choice(listoffields)
     SegmentFieldName = escapeseq + fieldname.replace("_",".")

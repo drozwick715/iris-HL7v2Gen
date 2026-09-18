@@ -1,11 +1,8 @@
 ARG  IMAGE=intersystemsdc/irishealth-community:preview
 FROM $IMAGE AS builder
-
-
-
-
-
+RUN pwd
 COPY module.xml module.xml
+RUN ls -l
 
 # run iris and initial 
 RUN --mount=type=bind,src=.,dst=. \
