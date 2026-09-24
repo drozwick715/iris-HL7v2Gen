@@ -2,7 +2,7 @@
     "objectscript.conn": {
         "server": "hl7v2gen",
         "ns": "USER",
-        "active": true
+        "active": false
     },
     "intersystems.servers": {
         "hl7v2gen": {

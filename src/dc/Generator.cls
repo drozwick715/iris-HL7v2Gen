@@ -2779,7 +2779,9 @@ Class dc.Generator Extends %SwizzleObject
         OriginalText = iris.cls(__name__).GenerateST(hl7version,characterSeparators)
         if hl7version > "2.6":
             SecAltIdentifier = iris.cls(__name__).GenerateST(hl7version,characterSeparators)
+
             SecAltText = iris.cls(__name__).GenerateST(hl7version,characterSeparators)
+
             OriginalText = iris.cls(__name__).GenerateST(hl7version,characterSeparators)
 
             # Try to grab value from HL7 Table if None returned then use list from another version's table
@@ -2812,7 +2814,7 @@ Class dc.Generator Extends %SwizzleObject
         if hl7version <= "2.6":
             return f"{Identifier}{separator}{Text}{separator}{NameofCodingSystem}{separator}{AlternateIdentifier}{separator}{AlternateText}{separator}{NameofAlternateCodingSystem}{separator}{CodingSystemVersionID}{separator}{AlternateCodingSystemVersion}{separator}{OriginalText}"
         else:
-            return f"{Identifier}{separator}{Text}{separator}{NameofCodingSystem}{separator}{AlternateIdentifier}{separator}{AlternateText}{separator}{NameofAlternateCodingSystem}{separator}{CodingSystemVersionID}{separator}{AlternateCodingSystemVersion}{separator}{OriginalText}{separator}{SecAltIdentifier}{component_separator}{SecAltText}{component_separator}{NameofSecAltCodingSystem}{component_separator}{SecAltCodingSystemVersionID}{component_separator}{CodingSystemOID}{component_separator}{ValueSetOID}{component_separator}{ValueSetVersionID}{component_separator}{AlternateCodingSystemOID}{separator}{AlternateValueSetOID}{separator}{AlternateValueSetVersionID}{separator}{SecAltCodingSystemOID}{separator}{SecAltValueSetOID}{separator}{SecAltValueSetVersionID}"
+            return f"{Identifier}{separator}{Text}{separator}{NameofCodingSystem}{separator}{AlternateIdentifier}{separator}{AlternateText}{separator}{NameofAlternateCodingSystem}{separator}{CodingSystemVersionID}{separator}{AlternateCodingSystemVersion}{separator}{OriginalText}{separator}{SecAltIdentifier}{separator}{SecAltText}{separator}{NameofSecAltCodingSystem}{separator}{SecAltCodingSystemVersionID}{separator}{CodingSystemOID}{separator}{ValueSetOID}{separator}{ValueSetVersionID}{separator}{AlternateCodingSystemOID}{separator}{AlternateValueSetOID}{separator}{AlternateValueSetVersionID}{separator}{SecAltCodingSystemOID}{separator}{SecAltValueSetOID}{separator}{SecAltValueSetVersionID}"
     }
 
     /// Build CX datatype
@@ -2831,6 +2833,7 @@ Class dc.Generator Extends %SwizzleObject
 
         # Build the example Datatype
         IDNumber = iris.cls(__name__).GenerateST(hl7version,characterSeparators)
+
         CheckDigit = ''.join(random.choices(string.ascii_uppercase, k=1))  # Random letter
 
         # Check Digit Scheme logic
@@ -2874,12 +2877,16 @@ Class dc.Generator Extends %SwizzleObject
             EffectiveDate = iris.cls(__name__).GenerateDT(hl7version,characterSeparators)
             # Need future date
             ExpirationDate = ini_time_for_now + timedelta(days = 30)
+
             ExpirationDate = ExpirationDate.strftime("%Y%m%d%H%M%S")
         if hl7version >"2.4":
             AssigningJurisdiction = iris.cls(__name__).GenerateCWE(hl7version,characterSeparators,subcomponent=1)
+
             AssigningAgencyorDepartment = iris.cls(__name__).GenerateCWE(hl7version,characterSeparators,subcomponent=1)
+
         if hl7version >"2.6":
             SecurityCheck = iris.cls(__name__).GenerateST(hl7version,characterSeparators)
+
             # Try to grab value from HL7 Table if None returned then use list from another version's table
             if (SecurityCheckScheme := iris.cls("dc.Generator").GenerateASampleTableValue(hl7version,"HL70904")) is not None:
                 # Do something with result

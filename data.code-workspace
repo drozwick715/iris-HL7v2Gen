@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "hl7v2gen:USER",
+			"uri": "isfs-readonly://hl7v2gen:user/"
+		}
+	],
+	"settings": {
+		"intersystems.servers": {
+
+		},
+		"objectscript.conn": {
+			active": true,
+			"username": "_system",
+			"ns": "USER",
+			"port": 52773,
+
+		}
+	}
+}

@@ -32,23 +32,25 @@ ClassMethod GetListAllDataTypesForVersion(hl7version = "2.5") [ Language = pytho
         except:
             print ("datatypes Errors")
             datatypes = {}
-        print(f"datatypes: {datatypes}")
+        print(type(datatypes))
+    #    print(f"datatypes: {datatypes}")
 
         #sorted_dict = dict(sorted(datatypes.items(),key=lambda item: item[0], reverse=False))
         #print(sorted_dict)
 
         iteration = 0
-        for x in datatypes:
+        for datatype in datatypes:
+            print(datatype)
             if iteration==0:
-                thislist = x
+                data_type_list = datatype
                 iteration += 1
             else:
-                thislist = thislist +","+x
+                data_type_list = data_type_list + "," + datatype
 
-        list_string = thislist.split(",")
-        unique_list = list(set(list_string))
-        unique_list.sort(reverse=False)
-        return unique_list
+        data_type_list_string = data_type_list.split(",")
+        data_type_unique_list = list(set(data_type_list_string))
+        data_type_unique_list.sort(reverse=False)
+        return data_type_unique_list
     else:
         print("Version Not supported")
         return 0

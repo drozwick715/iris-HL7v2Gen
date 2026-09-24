@@ -36,6 +36,41 @@ Class dc.Tester  Extends %SwizzleObject {
 
     }
 
+ClassMethod TestDataTypesForVersion(hl7version = "2.5") [ Language = python ]
+{
+    import importlib, random
+    import hl7apy as cr
+
+    #Get HL7 version related library
+    #print(cr.SUPPORTED_LIBRARIES)
+    # {'2.4': 'hl7apy.v2_4', '2.6': 'hl7apy.v2_6', '2.7': 'hl7apy.v2_7', '2.1': 'hl7apy.v2_1', '2.5': 'hl7apy.v2_5', '2.3.1': 'hl7apy.v2_3_1', '2.8.2': 'hl7apy.v2_8_2', '2.3': 'hl7apy.v2_3', '2.2': 'hl7apy.v2_2', '2.8': 'hl7apy.v2_8', '2.8.1': 'hl7apy.v2_8_1', '2.5.1': 'hl7apy.v2_5_1'}
+    #print(f" Testing hl7version: {hl7version}")
+    if hl7version in cr.SUPPORTED_LIBRARIES:
+
+        module_name = cr.SUPPORTED_LIBRARIES[hl7version]
+        #print(f"module_name: {module_name}")
+        #module_name: hl7apy.v2_5
+
+        lib = importlib.import_module(module_name)
+        #print(f"lib: {lib}")
+        #lib: <module 'hl7apy.v2_5' from '/usr/irissys/mgr/python/hl7apy/v2_5/__init__.py'>
+
+        #get datatype reference
+        try:
+            datatypes = lib.datatypes.DATATYPES_STRUCTS
+        except:
+            print ("datatypes Errors")
+
+    #    print(type(datatypes))
+    #    print(f"datatypes: {datatypes}")
+
+        for index, (datatype, structure) in enumerate(datatypes.items()):
+            print(f"Index: {index}, Datatype: {datatype}, Structure: {structure}\n\r")
+ 
+    else:
+        print("Version Not supported")
+
+}
 
     /// Test One specific data type per version a number of times
 ClassMethod TestOneDataTypeForVersionXtimes(hl7version= "2.5", datatype = "TS", numTimes = "1") [ Language = python ]
