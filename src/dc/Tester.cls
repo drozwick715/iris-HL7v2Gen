@@ -440,7 +440,7 @@ ClassMethod TestAllMessagesPerVersion(hl7version= "2.5", charSep = "|^~\&", requ
         file.write(str(message_types_per_version))
         file.write("\n")
     for message_type in list_of_message_types_per_version:
-        print(f"message_type: {message_type} \n")
+    #    print(f"message_type: {message_type} \n")
         sample = ""
         status = ""
         if message_type!="ACK":
@@ -448,11 +448,11 @@ ClassMethod TestAllMessagesPerVersion(hl7version= "2.5", charSep = "|^~\&", requ
                 sample = iris.cls("dc.Generator").GenerateAMessageSampleForVersion(hl7version,message_type,charSep,required,repeat)
             except Exception as e:
                 print(f"Generation failed at {e}")
-            print(f"sample: {sample}")
+        #    print(f"sample: {sample}")
         #    print(type(sample))
 
             status = iris.cls("dc.Validater").ValidateMessage(sample)
-            print(status)
+        #    print(status)
             with open("validation_report.txt", 'r') as src:
                 data = src.read()
             with open(filename,'a') as file:
