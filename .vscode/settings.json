@@ -2,14 +2,14 @@
     "objectscript.conn": {
         "server": "hl7v2gen",
         "ns": "USER",
-        "active": false
+        "active": true
     },
     "intersystems.servers": {
         "hl7v2gen": {
             "webServer": {
                 "scheme": "http",
                 "host": "localhost",
-                "port": 52773,
+                "port": 32783,
                 "pathPrefix": ""
             },
             "username": "_SYSTEM"

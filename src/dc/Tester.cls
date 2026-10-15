@@ -38,7 +38,7 @@ Class dc.Tester  Extends %SwizzleObject {
 
 ClassMethod TestDataTypesForVersion(hl7version = "2.5") [ Language = python ]
 {
-    import importlib, random
+    import importlib, random, iris
     import hl7apy as cr
 
     #Get HL7 version related library
@@ -58,14 +58,21 @@ ClassMethod TestDataTypesForVersion(hl7version = "2.5") [ Language = python ]
         #get datatype reference
         try:
             datatypes = lib.datatypes.DATATYPES_STRUCTS
-        except:
+        except Exception as e:
+            print({e})
             print ("datatypes Errors")
 
     #    print(type(datatypes))
+        # <class 'dict'>
     #    print(f"datatypes: {datatypes}")
 
         for index, (datatype, structure) in enumerate(datatypes.items()):
-            print(f"Index: {index}, Datatype: {datatype}, Structure: {structure}\n\r")
+            print(f"\n---Index: {index}, Datatype: {datatype}, Structure: {structure}\n\r")
+            try:
+                sample_datatype=iris.cls("dc.Generator").GenerateSampleDataType(hl7version,datatype,"","ADT^A01")
+            except Exception as e:
+                print({e})
+            print(f"Sample for {datatype} is {sample_datatype}\n")
  
     else:
         print("Version Not supported")
@@ -88,7 +95,7 @@ ClassMethod TestOneDataTypeForVersionXtimes(hl7version= "2.5", datatype = "TS", 
         if datatype in data_type_list:
             print("Data type is correct")
             for _ in range(int(numTimes)):
-                sampleDT = iris.cls("dc.Generator").GenerateSampleDataType(datatype,'',hl7version)
+                sampleDT = iris.cls("dc.Generator").GenerateSampleDataType(hl7version,datatype,"","")
                 print(f"datatype: {datatype} sampleDT: {sampleDT}")
         else:
             print(f"Data type is incorrect.  Try again using {data_type_list}")
@@ -116,7 +123,7 @@ ClassMethod TestAllDTsPerVersionXtimes(hl7version= "2.5", numTimes = "1") [ Lang
                 file.write("\n")
             for _ in range(int(numTimes)):
                 try:
-                    sampleDT = iris.cls("dc.Generator").GenerateSampleDataType(datatype,'',hl7version)
+                    sampleDT = iris.cls("dc.Generator").GenerateSampleDataType(hl7version,datatype,"","")
                     print(f"datatype: {datatype} sampleDT: {sampleDT}")
                     with open('DatatypesTest.txt','a') as file:
                         file.write(str(sampleDT))
@@ -204,10 +211,13 @@ ClassMethod TestAllFieldsPerVersionXtimes(hl7version= "2.5", numTimes = "1") [ L
         file.write("\n")
 
     for field in listoffields:
+        print("------------------------------------")
         print(field)
+        print("------------------------------------")
         with open('FieldTest.txt','a') as file:
+            file.write("------------------------\n")
             file.write(str(field))
-            file.write("\n")
+            file.write("\n------------------------\n")
         for _ in range(int(numTimes)):
             sample = iris.cls("dc.Generator").GenerateAFieldForVersion(hl7version,field)
             print(f"field: {field} sample: {sample}")
@@ -238,7 +248,10 @@ ClassMethod TestAllSegmentsPerVersion(hl7version= "2.5", charSep = "|^~\&", requ
             file.write(str(segment))
             file.write("\n")
         if segment=="MSH":
-            sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT_A19")
+            if hl7version < "2.3.1":
+                sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT^A19")
+            else:
+                sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT^A19^ADT_A19")
         else:
             sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"")
         print(f"segment: {segment} sample: {sample}")
@@ -259,7 +272,10 @@ ClassMethod TestOneSegmentsPerVersionXtimes(hl7version= "2.5", segment = "EVN", 
         for _ in range(int(numTimes)):
             ## if MSH then need to send what is going in MSH:9
             if segment=="MSH":
-                sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT_A19")
+                if hl7version < "2.3.1":
+                    sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT^A19")
+                else:
+                    sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT^A19^ADT_A19")
             else:
                 sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"")
             print(sample)
@@ -310,13 +326,13 @@ ClassMethod TestAllGroupsPerVersion(hl7version= "2.5", charSep = "|^~\&", requir
     print(listofgroups)
 
     for group in listofgroups:
-        print(f"Group Name: {group}")
+        print(f"Group Name: {group}\n------------------------\n")
         sample = iris.cls("dc.Generator").GenerateAGroupSampleForVersion(hl7version,group,charSep,required,repeat)
         print(f"group: {group} sample: {sample}")
 }
 
 /// Test One Group Per Version X times
-ClassMethod TestOneGroupsPerVersionXtimes(hl7version= "2.5", Group = "ADT_A01_INSURANCE", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
+ClassMethod TestOneGroupsPerVersionXtimes(hl7version= "2.5", group = "ADT_A01_INSURANCE", charSep = "|^~\&", required = 1, repeat = 1, numTimes = "1") As %Status [ Language = python ]
 {
     import iris
     import hl7apy as cr
@@ -326,8 +342,9 @@ ClassMethod TestOneGroupsPerVersionXtimes(hl7version= "2.5", Group = "ADT_A01_IN
     if group in listofgroups:
         print("Group is correct")
         for _ in range(int(numTimes)):
+            print(f"Group Name: {group}\n------------------------\n")
             sample = iris.cls("dc.Generator").GenerateAGroupSampleForVersion(hl7version,group,charSep,required,repeat)
-            print(f"Group: {Group} sample: {sample}")
+            print(f"Group: {group} sample: {sample}")
     else:
         print(f"Group isn't in version.  Try again using {listofgroups}")
 }
@@ -348,6 +365,7 @@ ClassMethod TestAllGroupsPerVersionXtimes(hl7version= "2.5", charSep = "|^~\&", 
         file.write("\n")
 
     for group in listofgroups:
+        print(f"Group Name: {group}\n------------------------\n")
         with open(filename,'a') as file:
             file.write(str(group))
             file.write("\n")
@@ -378,24 +396,28 @@ ClassMethod TestAllGroupsPerVersionXtimes(hl7version= "2.5", charSep = "|^~\&", 
                 status = ""
                 try:
                     sample = iris.cls("dc.Generator").GenerateAMessageSampleForVersion(hl7version,message,charSep,required,repeat)
-
-                    print(f"Message: {message} sample: {sample}")                    
-                    print(f"sample: {sample}")
-                    status = iris.cls("dc.Validater").ValidateMessage(sample)
-                    with open("validation_report.txt", 'r') as src:
-                        data = src.read()
-                    print(f"status: {status}")
-                    with open(filename,'a') as file:
-                        file.write(str(sample))
-                        file.write("\n\n")                
-                        file.write(str(status))
-                        file.write("\n\n")
-                        file.write(data)
-                        file.write("\n\n")
-                    file.close
-                    src.close
                 except Exception as e:
                     print(f"failed: {e}")
+
+                print(f"Message: {message} sample: {sample}")                    
+
+                try:
+                    status = iris.cls("dc.Validater").ValidateMessage(sample)
+                except Exception as e:
+                    print(f"failed: {e}")
+
+                with open("validation_report.txt", 'r') as src:
+                    data = src.read()
+                print(f"status: {status}")
+                with open(filename,'a') as file:
+                    file.write(str(sample))
+                    file.write("\n\n")                
+                    file.write(str(status))
+                    file.write("\n\n")
+                    file.write(data)
+                    file.write("\n\n")
+                file.close
+                src.close
         else:
             print(f"Message {message} isn't in version.  Try again using {listofmessages}")
     }
@@ -406,13 +428,13 @@ ClassMethod TestAllMessagesPerVersion(hl7version= "2.5", charSep = "|^~\&", requ
     import iris
 
     message_types_per_version = iris.cls("dc.GetStuff").GetAllMessageTypesForVersion(hl7version)
-    print(f"message_types_per_version: {message_types_per_version}")
-    print(type(message_types_per_version))
+#    print(f"message_types_per_version: {message_types_per_version}")
+#    print(type(message_types_per_version))
 
     list_of_message_types_per_version = message_types_per_version.split(",")
     print(f"list_of_message_types_per_version: {list_of_message_types_per_version}")
 
-    filename = "MessagesTest_" + str(required) + "_" + str(repeat) + ".txt"
+    filename = "MessagesTest_" + str(hl7version)+ "_" + str(required) + "_" + str(repeat) + ".txt"
 
     with open(filename,'w') as file:
         file.write(str(message_types_per_version))
@@ -421,27 +443,33 @@ ClassMethod TestAllMessagesPerVersion(hl7version= "2.5", charSep = "|^~\&", requ
         print(f"message_type: {message_type} \n")
         sample = ""
         status = ""
-        try:
-            sample = iris.cls("dc.Generator").GenerateAMessageSampleForVersion(hl7version,message_type,charSep,required,repeat)
-            
-        #    print(f"sample: {sample}")
+        if message_type!="ACK":
+            try:
+                sample = iris.cls("dc.Generator").GenerateAMessageSampleForVersion(hl7version,message_type,charSep,required,repeat)
+            except Exception as e:
+                print(f"Generation failed at {e}")
+            print(f"sample: {sample}")
+        #    print(type(sample))
+
             status = iris.cls("dc.Validater").ValidateMessage(sample)
+            print(status)
             with open("validation_report.txt", 'r') as src:
                 data = src.read()
-
-            print(f"status: {status}")
             with open(filename,'a') as file:
                 file.write(str(sample))
-                file.write("\n\n")                
+                file.write("\n\n")
                 file.write(str(status))
                 file.write("\n\n")
                 file.write(data)
-                file.write("\n\n")
-            file.close
-            src.close
-        except Exception as e:
-            print(f"failed: {e}")
+                file.write("\n\n")                
+            #try:
+            #    status = iris.cls("dc.Validater").ValidateMessage(sample)
+            #except Exception as e:
+            #    print(f"Validation failed at {e}")
 
+
+
+    file.close
     return
 }
 
@@ -468,6 +496,7 @@ ClassMethod TestAllMessagesPerVersionXtimes(hl7version= "2.5", charSep = "|^~\&"
             file.write("\n")
         for _ in range(int(numTimes)):
             sample = iris.cls("dc.Generator").GenerateAMessageSampleForVersion(hl7version,messageType,charSep,required,repeat)
+            status = iris.cls("dc.Validater").ValidateMessage(sample)
             with open(filename,'a') as file:
                 file.write(str(sample))
                 file.write("\n\n")

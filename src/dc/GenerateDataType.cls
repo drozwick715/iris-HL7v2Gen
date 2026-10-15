@@ -877,18 +877,21 @@ ClassMethod GenerateCM(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     return f"{messagetype}{CompSep}{TriggerEvent}"
 }
 
-/// Generate CM_MSG
-ClassMethod GenerateCMMSG(ver = "2.5", charSep = "|^~\&") [ Language = python ]
-{
-    # CMMSG
-    import iris
-    # Get the Component separator
-    CompSep = charSep[1:2]
-    messagetype = iris.cls(__name__).GenerateID(ver,charSep)
-    TriggerEvent = iris.cls(__name__).GenerateID(ver,charSep)
+    /// Generate CM_MSG
+    ClassMethod GenerateCMMSG(hl7version = "2.5", characterSeparators ="|^~\&",message="") [ Language = python ]
+    {
+        # CMMSG
+        import iris, random
 
-    return f"{messagetype}{CompSep}{TriggerEvent}"
-}
+        messagetype = message.split("_",1)[0]
+    #    print(messagetype)
+        triggerevent = message.split("_",1)[1]
+    #    print(triggerevent)
+
+        # Get the Component separator
+        separator = characterSeparators[1:2]
+        return f"{messagetype}{separator}{triggerevent}"
+    }
 
 /// Generate CM_NDL
 ClassMethod GenerateCMNDL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
@@ -2596,40 +2599,70 @@ ClassMethod GenerateGTS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     return ''.join(random.choices(string.ascii_uppercase, k=5))  # Random description
 }
 
-/// Build HD datatype
-ClassMethod GenerateHD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
-{
-    # HD Hierarchic Designator
-    import iris,importlib,random
-    from faker import Faker
-    from datetime import datetime
-    # Initialize Faker instance
-    fake = Faker()
-    import hl7apy as cr
-    #Get HL7 version related library
-    if ver in cr.SUPPORTED_LIBRARIES:      
-        message_with_descriptions = []
-        module_name = cr.SUPPORTED_LIBRARIES[ver]
-        lib = importlib.import_module(module_name)
-        #get tables reference
+    /// Build HD datatype
+    ClassMethod GenerateHD(hl7version = "2.5", characterSeparators ="|^~\&",fieldname="MSH_3",tablenumber="300",subcomponent=0) [ Language = python ]
+    {
+        # HD Hierarchic Designator
+        import iris,importlib,random
+        from faker import Faker
+        from datetime import datetime
+        # Initialize Faker instance
+        fake = Faker()
+        import hl7apy as cr
+
+        # Build the example Datatype
+        NamespaceID = tablenumber
+        if NamespaceID != "":
+        #    print("overhere")
+            # list of tables in this version
+            tables=iris.cls("dc.GetStuff").GetAllTablesForVersion(hl7version)
+            # Check if the field is a table entry
+            if NamespaceID in tables:
+        #        print("here")
+                try:
+                    codes_from_table = tables[field_table][1]
+                #    print(f"codes_from_table: {codes_from_table}")
+                    if codes_from_table != ():
+                        code_from_table = random.choice(codes_from_table)
+                    #    print(f"code_from_table: {code_from_table}")
+                        sample_namespace_id = code_from_table
+                    else:
+                        sample_namespace_id = "Table is empty"
+                except Exception as e:
+                    print({e})
+            else:
+                sample_namespace_id = ""
+        else:
+            sample_namespace_id = ""
+
+
+        # Try to grab value from HL7 Table if None returned then use list from another version's table
         try:
-            TABLES = lib.tables.TABLES
-        except:
-            TABLES = {}  
-    # Get the Component separator
-    CompSep = charSep[1:2]
-    # Build the example Datatype
-    NamespaceID = iris.cls(__name__).GenerateIS(ver,charSep)
-    UniversalID = iris.cls(__name__).GenerateST(ver, charSep)
-    # get table values
-    try:
-        UniversalIDType = TABLES["HL70301"][1]
-    except:
-        UniversalIDType = "DNS","EUI64","CLIA","CLIP","GUID","HCD","HL7","ISO","L,M,N","L","M","N","Random","URI","UUID","x400","x500"
-    # pick one of the values
-    UniversalIDType = random.choice(UniversalIDType)
-    return f"{NamespaceID}{CompSep}{UniversalID}{CompSep}{UniversalIDType}"
-}
+            if (UniversalIDType := iris.cls("dc.Generator").GenerateASampleTableValue(hl7version,"HL70301")) is not None:
+                # Do something with result
+                pass
+            else:
+                # Do something else
+            #    print("Method returned nothing")   
+                UniversalIDType = random.choice(["DNS","EUI64","CLIA","CLIP","GUID","HCD","HL7","ISO","L,M,N","L","M","N","Random","URI","UUID","x400","x500"])
+        except Exception as e:
+            print({e})
+
+        #Generate the Universal ID based on the random choice 
+        try:
+            UniversalID = iris.cls(__name__).GenerateUniversalID(UniversalIDType)
+        except Exception as e:
+            print({e})
+
+        # If this is a subcomponent then use subcomponent_separator else use component seperator
+        if subcomponent == True:
+            separator = characterSeparators[4:5]
+        else:
+            # Get the Component separator
+            separator = characterSeparators[1:2]
+        return f"{sample_namespace_id}{separator}{UniversalID}{separator}{UniversalIDType}"
+    }
+
 
 /// Generate ICD
 ClassMethod GenerateICD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
@@ -2951,7 +2984,7 @@ ClassMethod GenerateMOP(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
 }
 
 /// Generate MSG
-ClassMethod GenerateMSG(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateMSG(ver = "2.5", charSep = "|^~\&",message="ADT^A01^ADT_A01") [ Language = python ]
 {
     # MSG Message Type
     import iris,random,importlib
@@ -2969,21 +3002,27 @@ ClassMethod GenerateMSG(ver = "2.5", charSep = "|^~\&") [ Language = python ]
             TABLES = {}    
     # Get the Component separator
     CompSep = charSep[1:2]
-    try:        
-        MessageCode = TABLES["HL70076"][1]
-    except:
-        MessageCode = {}
-    MessageCode = random.choice(MessageCode)
+
+#    print(f"message: {message}")
     try:
-        TriggerEvent = TABLES["HL70003"][1]
-    except:
-        TriggerEvent = {}
-    TriggerEvent = random.choice(TriggerEvent)
+        # MessageCode = TABLES["HL70076"][1]
+        MessageCode = message.split("_")[0]
+    except Exception as e:
+        print(f"message code: {e}")
+
     try:
-        MessageStructure = TABLES["HL70354"][1]
-    except:
-        MessageStructure = {}
-    MessageStructure = random.choice(MessageStructure)
+        # TriggerEvent = TABLES["HL70003"][1]
+        TriggerEvent  = message.split("_")[1]      
+    except Exception as e:
+        print(f"trigger event: {e}")
+
+    try:
+        # MessageStructure = TABLES["HL70354"][1]
+        MessageStructure  = message
+    except Exception as e:
+        print(f"message structure: {e}")
+    
+
 
     return f"{MessageCode}{CompSep}{TriggerEvent}{CompSep}{MessageStructure}"
 }
@@ -4017,7 +4056,9 @@ ClassMethod GenerateSCV(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         ParameterClass = TABLES["HL70294"][1]
     except:
         ParameterClass = "Prefstart","Prefend","Mon","Tues","Wed","Thu","Fri","Sat","Sun"
-    ParameterClass = random.choice(ParameterClass)
+        ParameterClass = random.choice(ParameterClass)
+    ParameterClass = ParameterClass.title()
+#    print(ParameterClass)
     match ParameterClass:
         case "Prefstart":
             # Using current time
@@ -4313,6 +4354,62 @@ ClassMethod GenerateTXCHALLENGE(ver = "2.5", charSep = "|^~\&") [ Language = pyt
     fake = Faker()
     return fake.paragraph(nb_sentences=1)
 }
+
+    /// Generate Universal ID based on Universal ID Type Selected
+    ClassMethod GenerateUniversalID(universalidtype="UID") [ Language = python ]
+    {
+        import iris
+        from faker import Faker
+        from faker.providers import internet
+
+        fake = Faker()
+        #"DNS","EUI64","CLIA","CLIP","GUID","HCD","HL7","ISO","L,M,N","L","M","N","Random","URI","UUID","x400","x500"
+        match universalidtype:
+            case "DNS":
+                universal_id=fake.domain_name()
+                return(universal_id)
+            case "EUI64":
+                universal_id=fake.ipv6()
+                return(universal_id)
+            case "CLIA":
+                # Medical Billing: A CLIA number is a unique 10-digit alphanumeric identifier
+                universal_id=fake.pystr(min_chars=10, max_chars=10)
+                return(universal_id)
+            case "CLIP":
+                # CLIP (Code System: CLIP, Computable Name: CLP) was a retired HL7 CodeSystem used to define codes for radiology reports.  It was maintained by an external body and officially retired from the HL7 Terminology (THO) as of November 9, 2021.  The standard used the OID 2.16.840.1.113883.6.81 and was defined as case-sensitive with no specific codes currently represented within the code system resource itself. 
+                universal_id=fake.doi()
+                return(universal_id)
+            case "GUID":
+                universal_id=fake.uuid4()
+                return(universal_id)
+            case "HCD":
+                universal_id=fake.uuid4()
+                return(universal_id)
+            case "HL7":
+                universal_id=fake.uuid4()
+                return(universal_id)
+            case "ISO":
+                universal_id="2.16.840.1.113883"
+                return(universal_id)
+            case "URI":
+                #In HL7 Version 2, the Uniform Resource Identifier (URI) is defined as a type of Universal Identifier (UID) within the universalIdType code system (Table 0301). It is used within HD (Hierarchic Designator) and EI (Entity Identifier) datatypes to specify identifiers that follow the RFC 3986 standard.
+                universal_id=fake.uuid4()
+                return(universal_id)
+            case "UUID":
+                universal_id=fake.uuid4()
+                return(universal_id)
+            case "x400":
+                universal_id="C=US; ADMD=Internet; PRMD=xnren; O=UW-Madison; OU=cs; S=user;"
+                return(universal_id)
+            case "x500":
+                universal_id="cn=Rosanna Lee, ou=People, o=Sun, c=us"
+                return(universal_id)
+            case _:
+                universal_id=iris.cls(__name__).GenerateST()
+
+
+    }
+
 
 /// Generate UVC
 ClassMethod GenerateUVC(ver = "2.5", charSep = "|^~\&") [ Language = python ]

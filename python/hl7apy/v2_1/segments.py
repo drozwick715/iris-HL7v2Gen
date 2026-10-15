@@ -294,7 +294,7 @@ SEGMENTS = {
              ('ORC_12', FIELDS['ORC_12'], (0, 1), 'FIE'),
              ('ORC_13', FIELDS['ORC_13'], (0, 1), 'FIE'),
              ('ORC_14', FIELDS['ORC_14'], (0, -1), 'FIE'),)),
-    'ORO': (
+    'ORO': ('sequence',
             (('ORO_1', FIELDS['ORO_1'], (0, 1), 'FIE'),
              ('ORO_2', FIELDS['ORO_2'], (0, 1), 'FIE'),
              ('ORO_3', FIELDS['ORO_3'], (0, -1), 'FIE'),

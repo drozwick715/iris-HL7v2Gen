@@ -26,15 +26,17 @@ Class dc.Validater Extends %SwizzleObject
     #msg.validate(report_file='validation_report.txt')
     #/usr/irissys/mgr/user/validation_report.txt
 
-#    print(msg)
-
+    print(f"msg: {msg}")
+    status=0
     try:
-        message = parser.parse_message(msg)
-    #    print(parser.parse_segments(msg))
-        message.validate(report_file='validation_report.txt')
-        return "HL7 Message is valid! Check for warnings in /usr/irissys/mgr/user/validation_report.txt"
+        parsedmessage = parser.parse_message(msg.replace('\n', '\r'), find_groups=True, validation_level=2)
     except Exception as e:
-
-        return f"Invalid HL7 message: {e}, further information found in /usr/irissys/mgr/user/validation_report.txt"
+        print(f"parse failed: {e}")
+    print(f"parsedmessage: {parsedmessage}")
+    try:
+        status=parsedmessage.validate(report_file='validation_report.txt')
+    except Exception as e:
+        return(f"Validation of sample message failed: {e} see /usr/irissys/mgr/user/validation_report.txt for more information")  
+    return status
     }
 }

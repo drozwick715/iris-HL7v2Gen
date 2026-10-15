@@ -189,7 +189,7 @@
       //var getMessage =  #server(dc.HL7v2Gen.GenMessage(mtype,ver))#;
       try {
         var getMessage =  #server(..GenerateAMessageSampleForVersion(ver,mtype,encChars,req,repeat))#;
-        console.log(getMessage)
+        //console.log(getMessage)
       } catch(err) {
         console.log(err.stack);
       }
@@ -297,10 +297,10 @@
           alert("Please create or enter message first.");
           return; // Stop further execution
           }  
-    console.log(JSON.stringify(hl7mes))
+    //console.log(JSON.stringify(hl7mes))
     const result = hl7mes.replace(/\n/g, '\r');
     var getVal =  #server(..ValidateMessage(result))#;
-    console.log(getVal)
+    //console.log(getVal)
     var selectElementVal = document.getElementById("hl7MessageB"); 
     selectElementVal.value = getVal;
     this.blur()
@@ -316,24 +316,32 @@
     var hl7MessageType = document.getElementById("messageType");
     // Get the selected version value
     var vers = hl7VersionSelect.value;
-    vers = hl7VersionSelect.value; // Update the value when the selection changes     
-    // get the list of message types from the server using the version
-    var res =  #server(..GetMessageTypesForVersion(vers,"1"))#;
-    //console.log(res)
-    // split the results because the type and description are joined with a pipe
-    var arr = res.split('|');    
-    // start to build the list into an html element
-    var selectElement = document.getElementById("messageType"); 
-    selectElement.innerHTML = '';
-    // loop through the list of message types
-    arr.forEach(function(item) {
-      // Create a new option element
-      var option = document.createElement("option");
-      option.value = item; // Set the value of the option
-      option.textContent = item; // Set the text content of the option                
-      // Append the option to the select element
-      selectElement.appendChild(option);
-    }); 
+    /////vers = hl7VersionSelect.value; // Update the value when the selection changes    
+    // Primary dropdown change handler
+    document.getElementById("hl7Version").addEventListener("change", function() {
+      const messageType = document.getElementById("messageType");
+      // 1. Clear existing options
+      messageType.innerHTML = "";
+    
+    
+      // get the list of message types from the server using the version
+      var res =  #server(..GetMessageTypesForVersion(vers,"1"))#;
+      //console.log(res)
+      // split the results because the type and description are joined with a pipe
+      var arr = res.split('|');    
+      // start to build the list into an html element
+      var selectElement = document.getElementById("messageType"); 
+      selectElement.innerHTML = '';
+      // loop through the list of message types
+      arr.forEach(function(item) {
+        // Create a new option element
+        var option = document.createElement("option");
+        option.value = item; // Set the value of the option
+        option.textContent = item; // Set the text content of the option                
+        // Append the option to the select element
+        selectElement.appendChild(option);
+      }); 
+    });
     document.getElementById("messageType").value = ""        
     // Get Message type upon version number modification
     hl7VersionSelect.addEventListener("change", function() {
@@ -437,68 +445,72 @@
     </div>
   </nav>
   <!-- End Navbar -->     	
-<div class="container-fluid">
+<div class="container">
 
 <!-- selection criteria -->
-<div class="container-fluid">
+<div class="container">
   <h1>HL7 V2 Message Generator, Validator, Sender</h1>
   <p>Note: 1) Pick a version 2)  Pick a Message Type 3) Pick if you want optional or just required 4) Pick if want to repeat more than once.</p>
   <form>
     <div class="form-row">
-      <div class="col">
+      <div class="col-auto">
         <!-- List Box 1 Caption: HL7 Version -->
         <div class="d-flex align-items-center">
-            <label for="hl7Version" class="form-label" style="white-space: nowrap;margin:5px">HL7 Version</label>
-            <select id="hl7Version" class="form-select form-control mb-2 mr-sm-2" onchange="LoadEvent();">
-                <option value="2.1">2.1</option>
-                <option value="2.2">2.2</option>
-                <option value="2.3">2.3</option>
-                <option value="2.3.1">2.3.1</option>
-                <option value="2.4">2.4</option>
-                <option selected>2.5</option>
-                <option value="2.5.1">2.5.1</option>
-                <option value="2.6">2.6</option>
-                <option value="2.7">2.7</option>
-                <option value="2.8">2.8</option>
-                <option value="2.8.1">2.8.1</option>
-                <option value="2.8.2">2.8.2</option>
-            </select>
+          <div style="display: flex; width: fit-content; margin: 0 auto;">
+              <label for="hl7Version" class="form-label">HL7 Version</label>
+              <select id="hl7Version" class="form-select" onchange="LoadEvent();">
+                  <option value="2.1">2.1</option>
+                  <option value="2.2">2.2</option>
+                  <option value="2.3">2.3</option>
+                  <option value="2.3.1">2.3.1</option>
+                  <option value="2.4">2.4</option>
+                  <option selected>2.5</option>
+                  <option value="2.5.1">2.5.1</option>
+                  <option value="2.6">2.6</option>
+                  <option value="2.7">2.7</option>
+                  <option value="2.8">2.8</option>
+                  <option value="2.8.1">2.8.1</option>
+                  <option value="2.8.2">2.8.2</option>
+              </select>
+          </div>
         </div>
       </div>
 
-      <div class="col">
+      <div class="col-auto">
         <!-- List Box 2 Caption: Message Type -->
         <div class="d-flex align-items-center">
-          <label for="messageType" class="form-label" style="white-space: nowrap; margin:5px">Message Type</label>
-          <select id="messageType" class="form-select form-control mb-2 mr-sm-2">
-          </select>
+          <div style="display: flex; width: fit-content; margin: 0 auto;">
+            <label for="messageType" class="form-label">Message Type</label>
+            <select id="messageType" class="form-select form-control">
+            </select>
+          </div>
         </div>
       </div>
 
-      <div class="col">
+      <div class="col-auto">
         <!-- Text Box 3 Caption: Encoding Characters -->
         <div class="d-flex align-items-center">
-          <label for="EncodingChars" class="form-label" style="white-space: nowrap; margin:5px">Encoding Characters</label>
-          <input type="text" id="EncodingChars" class="form-control mb-2 mr-sm-2" value="|^~\&">
+          <label for="EncodingChars" class="form-label" >Encoding Characters</label>
+          <input type="text" id="EncodingChars" class="form-control" value="|^~\&">
           </input>
         </div>
       </div>
 
-      <div class="col">
+      <div class="col-auto">
         <!-- List Box 4 Caption: Required Fields? -->
         <div class="d-flex align-items-center">
-          <label for="RequiredOrOptional" class="form-label" style="white-space: nowrap; margin:5px">Required or Optional</label>
-          <select id="RequiredOrOptional" class="form-select form-control mb-2 mr-sm-2">
+          <label for="RequiredOrOptional" class="form-label">Required or Optional</label>
+          <select id="RequiredOrOptional" class="form-select form-control">
             <option Selected value="Req">Required Only</option>
             <option value="Opt">Include Optional</option>
           </select>
         </div>
       </div>
-      <div class="col">
+      <div class="col-auto">
         <!-- Text Box 5 Caption: Repeatable -->
         <div class="d-flex align-items-center">
-          <label for="Repeats" class="form-label" style="white-space: nowrap; margin:5px">Repeats</label>
-          <input type="text" id="Repeats" class="form-select form-control mb-2 mr-sm-2" value="1">
+          <label for="Repeats" class="form-label">Repeats</label>
+          <input type="text" id="Repeats" class="form-select form-control" value="1">
           </input>
         </div>
       </div>
@@ -512,7 +524,7 @@
 
 
 <!--   -->
-  <div class="container-fluid">
+  <div class="container">
     <div class="row">
       <div class="col-lg-4 col-4">
         <div class="card card-widget widget-user-2" style="margin-top: 10px;">
