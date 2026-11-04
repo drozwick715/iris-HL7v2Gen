@@ -2161,7 +2161,7 @@ ClassMethod GenerateCWE(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Lang
 }
 
 /// Build CX datatype
-ClassMethod GenerateCX(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateCX(ver = "2.5", charSep = "|^~\&",subcomponent="0") [ Language = python ]
 {
     # CX Extended Composite ID with Check Digit
     import iris,textwrap,random,importlib,string
@@ -2183,6 +2183,7 @@ ClassMethod GenerateCX(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     fake = Faker()
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5] 
 
 
     # Build the example Datatype
@@ -2225,8 +2226,8 @@ ClassMethod GenerateCX(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         ExpirationDate = ini_time_for_now + timedelta(days = 30)
         ExpirationDate = ExpirationDate.strftime("%Y%m%d%H%M%S")
     if ver >"2.4":
-        AssigningJurisdiction = iris.cls(__name__).GenerateCWE(ver,charSep)
-        AssigningAgencyorDepartment = iris.cls(__name__).GenerateCWE(ver,charSep)
+        AssigningJurisdiction = iris.cls(__name__).GenerateCWE(ver,charSep,1)
+        AssigningAgencyorDepartment = iris.cls(__name__).GenerateCWE(ver,charSep,1)
     if ver >"2.6":
         SecurityCheck = iris.cls(__name__).GenerateST(ver,charSep)
         # get the table values
@@ -2237,32 +2238,61 @@ ClassMethod GenerateCX(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         # pick a random value
         SecurityCheckScheme = random.choice(SecurityCheckScheme)
 
-    # return case
-    match ver:
-        case "2.3":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}"
-        case "2.3.1":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}"
-        case "2.4":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}"
-        case "2.5":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
-        case "2.5.1":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
-        case "2.6":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
-        case "2.7":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
-        case "2.7.1":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
-        case "2.8":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
-        case "2.8.1":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
-        case "2.8.2":
-            return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
-        case _:
-            return
+    # if this is going to be a subcomponent then need to switch separator
+    if subcomponent=="0":
+        # return case
+        match ver:
+            case "2.3":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}"
+            case "2.3.1":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}"
+            case "2.4":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}"
+            case "2.5":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
+            case "2.5.1":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
+            case "2.6":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
+            case "2.7":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
+            case "2.7.1":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
+            case "2.8":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
+            case "2.8.1":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
+            case "2.8.2":
+                return f"{IDNumber}{CompSep}{CheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{AssigningAuthority}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}{CompSep}{SecurityCheck}{CompSep}{SecurityCheckScheme}"
+            case _:
+                return
+    else:
+        # return case
+        match ver:
+            case "2.3":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}"
+            case "2.3.1":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}"
+            case "2.4":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}"
+            case "2.5":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}"
+            case "2.5.1":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}"
+            case "2.6":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}"
+            case "2.7":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}{SubCompSep}{SecurityCheck}{SubCompSep}{SecurityCheckScheme}"
+            case "2.7.1":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}{SubCompSep}{SecurityCheck}{SubCompSep}{SecurityCheckScheme}"
+            case "2.8":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}{SubCompSep}{SecurityCheck}{SubCompSep}{SecurityCheckScheme}"
+            case "2.8.1":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}{SubCompSep}{SecurityCheck}{SubCompSep}{SecurityCheckScheme}"
+            case "2.8.2":
+                return f"{IDNumber}{SubCompSep}{CheckDigit}{SubCompSep}{CheckDigitScheme}{SubCompSep}{AssigningAuthority}{SubCompSep}{IdentifierTypeCode}{SubCompSep}{AssigningFacility}{SubCompSep}{EffectiveDate}{SubCompSep}{ExpirationDate}{SubCompSep}{AssigningJurisdiction}{SubCompSep}{AssigningAgencyorDepartment}{SubCompSep}{SecurityCheck}{SubCompSep}{SecurityCheckScheme}"
+            case _:
+                return
 }
 
 /// Generate DDI
@@ -2501,7 +2531,7 @@ ClassMethod GenerateED(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate EI
-ClassMethod GenerateEI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateEI(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # EI Entity Identifier
     import iris,importlib, random
@@ -2519,6 +2549,7 @@ ClassMethod GenerateEI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     
     EntityIdentifier = iris.cls(__name__).GenerateST(ver,charSep)
     NamespaceID = iris.cls(__name__).GenerateID(ver,charSep)
@@ -2528,8 +2559,10 @@ ClassMethod GenerateEI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         UniversalIDType = "DNS","GUID","HCD","HL7","ISO","L,M,N","L","M","N","Random","UUID","x400","x500"
     UniversalIDType = random.choice(UniversalIDType)
-
-    return f"{EntityIdentifier}{CompSep}{NamespaceID}{CompSep}{UniversalID}{CompSep}{UniversalIDType}"
+    if subcomponent=="0":
+        return f"{EntityIdentifier}{CompSep}{NamespaceID}{CompSep}{UniversalID}{CompSep}{UniversalIDType}"
+    else:
+        return f"{EntityIdentifier}{SubCompSep}{NamespaceID}{SubCompSep}{UniversalID}{SubCompSep}{UniversalIDType}"
 }
 
 /// Generate EIP
@@ -2678,7 +2711,7 @@ ClassMethod GenerateGTS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
     /// Build HD datatype
-    ClassMethod GenerateHD(hl7version = "2.5", characterSeparators ="|^~\&",fieldname="MSH_3",tablenumber="300",subcomponent=0) [ Language = python ]
+    ClassMethod GenerateHD(hl7version = "2.5", charSep ="|^~\&",fieldname="MSH_3",tablenumber="300",subcomponent=0) [ Language = python ]
     {
         # HD Hierarchic Designator
         import iris,importlib,random
@@ -2687,6 +2720,13 @@ ClassMethod GenerateGTS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         # Initialize Faker instance
         fake = Faker()
         import hl7apy as cr
+
+        # Get the Component separator
+        CompSep = charSep[1:2]
+    #    print(f"CompSep: {CompSep}")
+        SubCompSep = charSep[4:5]
+    #    print(f"SubCompSep: {SubCompSep}")
+    #    print(f"subcomponent: {subcomponent}")
 
         # Build the example Datatype
         NamespaceID = tablenumber
@@ -2715,16 +2755,15 @@ ClassMethod GenerateGTS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
 
         # Try to grab value from HL7 Table if None returned then use list from another version's table
-        try:
-            if (UniversalIDType := iris.cls("dc.Generator").GenerateASampleTableValue(hl7version,"HL70301")) is not None:
-                # Do something with result
-                pass
-            else:
-                # Do something else
-            #    print("Method returned nothing")   
-                UniversalIDType = random.choice(["DNS","EUI64","CLIA","CLIP","GUID","HCD","HL7","ISO","L,M,N","L","M","N","Random","URI","UUID","x400","x500"])
-        except Exception as e:
-            print({e})
+
+        if (UniversalIDType := iris.cls("dc.Generator").GenerateASampleTableValue(hl7version,"HL70301")) is not None:
+            # Do something with result
+            pass
+        else:
+            # Do something else
+        #    print("Method returned nothing")   
+            UniversalIDType = random.choice(["DNS","EUI64","CLIA","CLIP","GUID","HCD","HL7","ISO","L,M,N","L","M","N","Random","URI","UUID","x400","x500"])
+
 
         #Generate the Universal ID based on the random choice 
         try:
@@ -2733,12 +2772,15 @@ ClassMethod GenerateGTS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
             print({e})
 
         # If this is a subcomponent then use subcomponent_separator else use component seperator
-        if subcomponent == True:
-            separator = characterSeparators[4:5]
+        if subcomponent == 1:
+        #    print("here")
+            return f"{sample_namespace_id}{SubCompSep}{UniversalID}{SubCompSep}{UniversalIDType}"
+
         else:
-            # Get the Component separator
-            separator = characterSeparators[1:2]
-        return f"{sample_namespace_id}{separator}{UniversalID}{separator}{UniversalIDType}"
+        #    print("not here")
+            return f"{sample_namespace_id}{CompSep}{UniversalID}{CompSep}{UniversalIDType}"
+
+
     }
 
 
@@ -3418,9 +3460,11 @@ ClassMethod GeneratePL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     LocationDescription = iris.cls(__name__).GenerateST(ver,charSep)
 
-    ComprehensiveLocationIdentif = iris.cls(__name__).GenerateEI(ver,charSep)
+    ComprehensiveLocationIdentif = iris.cls(__name__).GenerateEI(ver,charSep,1)
 
-    AssigningAuthorityforLocatio = iris.cls(__name__).GenerateHD(ver,charSep)
+    AssigningAuthorityforLocatio = iris.cls(__name__).GenerateHD(ver,charSep,"","",1)
+
+#    print(f"AssigningAuthorityforLocatio: {AssigningAuthorityforLocatio}")
         # get table values
     try:
         PersonLocationType = TABLES["HL70305"][1]

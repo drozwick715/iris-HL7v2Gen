@@ -389,10 +389,12 @@ Class dc.Generator Extends %SwizzleObject
                     GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXPN(hl7version,characterSeparators)
                 case "XTN":
                     GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateXTN(hl7version,characterSeparators)
-                case "_":
+                case None:
+                    GeneratedDataType = ""
+                case _:
                     ##print("No matching datatypes")
-                    GeneratedDataType = "A"
-                
+                    GeneratedDataType = "DJR"
+        #    print(f"dataType: {dataType}, GeneratedDataType: {GeneratedDataType}")
             return GeneratedDataType
         except RuntimeError as e:
             # Catches ObjectScript errors thrown by the IRIS engine

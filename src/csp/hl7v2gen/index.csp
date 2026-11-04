@@ -351,7 +351,6 @@
       console.log(vers)
       var res =  #server(..GetAllTriggersForVersion(vers,"1"))#;
       console.log(res)
-      var arr = res;
       var arr = res.split('|');    
       //var arr = res.split(',');
       console.log(arr)
