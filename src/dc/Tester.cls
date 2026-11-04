@@ -191,7 +191,7 @@ ClassMethod TestOneFieldPerVersionXtimes(hl7version= "2.5", fieldname = "ABS_4",
     if fieldname in listoffields:
         print("Field name is correct")
         for _ in range(int(numTimes)):
-            sampleField = iris.cls("dc.Generator").GenerateFieldForVersion(hl7version, fieldname)
+            sampleField = iris.cls("dc.Generator").GenerateAFieldForVersion(hl7version, fieldname)
             print(f"Field: {fieldname} sampleField: {sampleField}")
 
     else:
@@ -267,16 +267,21 @@ ClassMethod TestOneSegmentsPerVersionXtimes(hl7version= "2.5", segment = "EVN", 
     import hl7apy as cr
     separator = ","
     listofsegments = iris.cls("dc.GetStuff").GetAllSegmentsForVersion(hl7version).split(separator)
+#    print(listofsegments)
     if segment in listofsegments:
-        print("Segment is correct")
+    #    print("Segment is correct")
         for _ in range(int(numTimes)):
             ## if MSH then need to send what is going in MSH:9
             if segment=="MSH":
+            #    print("Processing MSH segment")
                 if hl7version < "2.3.1":
+                #    print("Generating MSH segment for version less than 2.3.1")
                     sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT^A19")
                 else:
+                #    print("Generating MSH segment for version 2.3.1 or greater")
                     sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"ADT^A19^ADT_A19")
             else:
+            #    print("Generating segment for non-MSH segment")
                 sample = iris.cls("dc.Generator").GenerateASegmentSampleForVersion(hl7version,segment,charSep,required,repeat,"")
             print(sample)
     else:
@@ -291,7 +296,7 @@ ClassMethod TestAllSegmentsPerVersionXtimes(hl7version= "2.5", charSep = "|^~\&"
     separator = ","
     listofsegments = iris.cls("dc.GetStuff").GetAllSegmentsForVersion(hl7version).split(separator)
     print(listofsegments)
-    filename = "SegmentTest_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
+    filename = "SegmentTest_" + str(hl7version) + "_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
     print(filename)
     with open(filename,'w') as file:
         file.write(str(listofsegments))
@@ -358,7 +363,7 @@ ClassMethod TestAllGroupsPerVersionXtimes(hl7version= "2.5", charSep = "|^~\&", 
     ## get a list of groups for the version
     listofgroups = iris.cls("dc.GetStuff").GetAllGroupsForVersion(hl7version).split(separator)
     print(listofgroups)
-    filename = "GroupTest_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
+    filename = "GroupTest_" + str(hl7version) + "_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
     print(filename)
     with open(filename,'w') as file:
         file.write(str(listofgroups))
@@ -382,7 +387,7 @@ ClassMethod TestAllGroupsPerVersionXtimes(hl7version= "2.5", charSep = "|^~\&", 
         import iris
         import hl7apy as cr
         separator = "|"
-        filename = "MessagesTest_" + str(required) + "_" + str(repeat) + ".txt"
+        filename = "MessagesTest_" + str(hl7version) + "_" + str(required) + "_" + str(repeat) + "_" + str(numTimes) + ".txt"
         ## get a list of groups for the version
         listofmessages = iris.cls("dc.GetStuff").GetMessageTypesForVersion(hl7version).split(separator)
     #    print(listofmessages)
@@ -595,6 +600,34 @@ ClassMethod MethodName() As %Status [ Language = python ]
             await writer.wait_closed()
 
         asyncio.run(tcp_echo_client('Hello World!'))
+    }
+
+/// Description
+ClassMethod MethodName9() As %Status [ Language = python ]
+    {
+        import importlib
+
+        def get_supported_trigger_events(hl7_version="2.5"):
+            # Replace dots with underscores to match the internal hl7apy naming convention
+            version_mod = hl7_version.replace(".", "_")
+            
+            try:
+                # Dynamically import the messages module for the given HL7 version
+                messages_module = importlib.import_module(f"hl7apy.v{version_mod}.messages")
+                
+                # Extract all message definitions available in the MESSAGES dictionary
+                if hasattr(messages_module, "MESSAGES"):
+                    return sorted(list(messages_module.MESSAGES.keys()))
+                else:
+                    return "No 'MESSAGES' dictionary found for this version."
+                    
+            except ImportError:
+                return f"HL7 version {hl7_version} is not supported or installed in hl7apy."
+
+        # Example: Find all supported trigger event types for HL7 v2.5
+        supported_events = get_supported_trigger_events("2.5")
+        print(f"Supported events for v2.5 ({len(supported_events)} found):")
+        print(supported_events)
     }
 
 }

@@ -58,8 +58,8 @@ def parse_message(message, validation_level=None, find_groups=True, message_prof
 
     :return: an instance of :class:`Message <hl7apy.core.Message>`
 
-    >>> message = "MSH|^~\\&|GHH_ADT||||20080115153000||OML^O33^OML_O33|0123456789|P|2.5||||AL\\rPID|1||" \
-    "566-554-3423^^^GHH^MR||EVERYMAN^ADAM^A|||M|||2222 HOME STREET^^ANN ARBOR^MI^^USA||555-555-2004|||M\\r"
+    >>> message = "MSH|^~\\&|||||20261015150605||ACK|TLCMR1XQ|T^Not present|2.5|||||||||\\r" \
+	"MSA|CR|R93W5LPO||||\\r"
     >>> m = parse_message(message)
     >>> print(m)
     <Message OML_O33>
@@ -700,7 +700,7 @@ def get_message_info(content):
             try:
                 message_structure = "{0}_{1}".format(message_type[0], message_type[1])
             except IndexError:
-                message_structure = None
+                message_structure = message_type[0]
 
     # look for MSH.12 field containing the message's version
     try:

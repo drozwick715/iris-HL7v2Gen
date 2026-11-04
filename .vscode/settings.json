@@ -1,11 +1,11 @@
 {
     "objectscript.conn": {
-        "server": "hl7v2gen",
+        "server": "workspace-hl7v2gen",
         "ns": "USER",
         "active": true
     },
     "intersystems.servers": {
-        "hl7v2gen": {
+        "workspace-hl7v2gen": {
             "webServer": {
                 "scheme": "http",
                 "host": "localhost",

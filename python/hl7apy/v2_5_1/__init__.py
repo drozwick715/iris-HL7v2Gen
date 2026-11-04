@@ -28,12 +28,13 @@ from .fields import FIELDS
 from .datatypes import DATATYPES, DATATYPES_STRUCTS
 from .groups import GROUPS
 from .tables import TABLES
+from .triggers import TRIGGERS
 
 from hl7apy.exceptions import ChildNotFound
 
 ELEMENTS = {'Message': MESSAGES, 'Group': GROUPS, 'Segment': SEGMENTS,
             'Field': FIELDS, 'Component': DATATYPES, 'SubComponent': DATATYPES,
-            'Datatypes_Structs': DATATYPES_STRUCTS, 'Table': TABLES}
+            'Datatypes_Structs': DATATYPES_STRUCTS, 'Table': TABLES, 'Trigger': TRIGGERS}
 
 
 def get(name, element_type):
