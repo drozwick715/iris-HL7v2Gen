@@ -692,8 +692,10 @@ Class dc.Generator Extends %SwizzleObject
             #    print(item)
                 field = item[0]
             #    requirerepeatable = item[2]
-                hl7required = item[2][0]
-                hl7repeatable = item[2][1]
+                # HL7 required is -1 when required and 1 when not required
+                hl7required = item[2][1]
+                # HL7 repeatable is 0 when not allowed, 1 when allowed
+                hl7repeatable = item[2][0]
             #    print(f"field: {field}")
             #    print(requirerepeatable)
             #    print(hl7required)

@@ -2045,37 +2045,6 @@ class Message(Group):
 
     encoding_chars = property(_get_encoding_chars, _set_encoding_chars)
 
-class Trigger(Message):
-    """
-    Class representing an HL7 trigger
-
-    :type name: ``str``
-    :param name: the HL7 name of the trigger (e.g. OML_O33)
-
-    """
-
-    def __init__(self, name=None, reference=None, version=None, validation_level=None):
-
-        if reference is not None:
-            try:
-                reference = reference[name]
-                if reference[0] == 'mp':
-                    raise LegacyMessageProfile()
-            except KeyError:
-                raise MessageProfileNotFound()
-            except TypeError:
-                pass
-        try:
-            super(Message, self).__init__(name, None, reference, version,
-                                          validation_level)
-        except InvalidName:
-            if _valid_z_message_name(name):
-                reference = ('sequence', ())
-                super(Message, self).__init__(name, None, reference, version,
-                                              validation_level)
-            else:
-                raise
-
 
 if __name__ == '__main__':
     import doctest

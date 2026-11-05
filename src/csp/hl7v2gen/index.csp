@@ -325,7 +325,7 @@
     
       console.log(vers)
       // get the list of message types from the server using the version
-      var res =  #server(..GetAllTriggersForVersion(vers,"1"))#;
+      var res =  #server(..GetMessageTypesForVersion(vers,"1"))#;
       console.log(res)
       // split the results because the type and description are joined with a pipe
       var arr = res.split('|');    
@@ -349,7 +349,7 @@
     hl7VersionSelect.addEventListener("change", function() {
       vers = hl7VersionSelect.value; // Update the value when the selection changes
       console.log(vers)
-      var res =  #server(..GetAllTriggersForVersion(vers,"1"))#;
+      var res =  #server(..GetMessageTypesForVersion(vers,"1"))#;
       console.log(res)
       var arr = res.split('|');    
       //var arr = res.split(',');
