@@ -323,12 +323,14 @@
       // 1. Clear existing options
       messageType.innerHTML = "";
     
-    
+      console.log(vers)
       // get the list of message types from the server using the version
-      var res =  #server(..GetMessageTypesForVersion(vers,"1"))#;
-      //console.log(res)
+      var res =  #server(..GetAllTriggersForVersion(vers,"1"))#;
+      console.log(res)
       // split the results because the type and description are joined with a pipe
       var arr = res.split('|');    
+      //var arr = res.split(',');
+      console.log(arr)
       // start to build the list into an html element
       var selectElement = document.getElementById("messageType"); 
       selectElement.innerHTML = '';
@@ -345,10 +347,14 @@
     document.getElementById("messageType").value = ""        
     // Get Message type upon version number modification
     hl7VersionSelect.addEventListener("change", function() {
-      vers = hl7VersionSelect.value; // Update the value when the selection changes     
-      var res =  #server(..GetMessageTypesForVersion(vers,"1"))#; 
-      //console.log(res)
+      vers = hl7VersionSelect.value; // Update the value when the selection changes
+      console.log(vers)
+      var res =  #server(..GetAllTriggersForVersion(vers,"1"))#;
+      console.log(res)
+      var arr = res;
       var arr = res.split('|');    
+      //var arr = res.split(',');
+      console.log(arr)
       var selectElement = document.getElementById("messageType"); 
       // Reset Message segments
       const ul = document.getElementById('myUL');        
@@ -464,7 +470,7 @@
                   <option value="2.3">2.3</option>
                   <option value="2.3.1">2.3.1</option>
                   <option value="2.4">2.4</option>
-                  <option selected>2.5</option>
+                  <option value="2.5">2.5</option>
                   <option value="2.5.1">2.5.1</option>
                   <option value="2.6">2.6</option>
                   <option value="2.7">2.7</option>

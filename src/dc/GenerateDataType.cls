@@ -42,7 +42,10 @@ ClassMethod GenerateAD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         AT = "BA","BI","N","BDL","F","C","B","H","L","M","O","P","RH","BR","S","SH","TM","V"
     AddressType = random.choice(AT)
     OtherGeographicDesignation = fake.current_country()
-    return f"{StreetAddress}{CompSep}{OtherDesignation}{CompSep}{City}{CompSep}{StateorProvince}{CompSep}{ZiporPostalCode}{CompSep}{Country}{CompSep}{AddressType}{CompSep}{OtherGeographicDesignation}"
+    if ver == "2.1":
+        return f"{StreetAddress}{CompSep}{OtherDesignation}{CompSep}{City}{CompSep}{StateorProvince}{CompSep}{ZiporPostalCode}{CompSep}{Country}"
+    if ver >= "2.2":
+        return f"{StreetAddress}{CompSep}{OtherDesignation}{CompSep}{City}{CompSep}{StateorProvince}{CompSep}{ZiporPostalCode}{CompSep}{Country}{CompSep}{AddressType}{CompSep}{OtherGeographicDesignation}"
 }
 
 /// Build AUI datatype
@@ -180,7 +183,7 @@ ClassMethod GenerateCCD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         case _:
             InvocationEvent = "notable"    
 
-    Datetime = iris.cls(__name__).GenerateTS(ver,charSep)
+    Datetime = iris.cls(__name__).GenerateTS(ver,charSep,"1")
 
 
     return f"{InvocationEvent}{CompSep}{Datetime}"
@@ -216,7 +219,7 @@ ClassMethod GenerateCD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Build CE datatype
-ClassMethod GenerateCE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateCE(ver = "2.5", charSep = "|^~\&", subcomponent = "0") [ Language = python ]
 {
     import textwrap,random,importlib,string
     from faker import Faker
@@ -237,6 +240,7 @@ ClassMethod GenerateCE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ La
     fake = Faker()
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
 
     # Build the example Datatype
     identifierST = str(random.randint(100, 999))  # Random 3-digit code
@@ -264,7 +268,7 @@ ClassMethod GenerateCE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ La
     nameofalternatecodingsystem = random.choice(nameofalternatecodingsystem)
 
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep == "None":
+    if subcomponent == "0":
         return f"{identifierST}{CompSep}{text}{CompSep}{nameofcodingsystem}{CompSep}{alternateidentifierST}{CompSep}{alternatetext}{CompSep}{nameofalternatecodingsystem}"
     else:
         return f"{identifierST}{SubCompSep}{text}{SubCompSep}{nameofcodingsystem}{SubCompSep}{alternateidentifierST}{SubCompSep}{alternatetext}{SubCompSep}{nameofalternatecodingsystem}"
@@ -401,8 +405,10 @@ ClassMethod GenerateCK(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # pick one of the values
     codeidentifyingthecheckdigit = random.choice(codeidentifyingthecheckdigit)
     assigningauthority = fake.company()
-
-    return f"{IDnumberNM}{CompSep}{checkdigit}{CompSep}{codeidentifyingthecheckdigit}{CompSep}{assigningauthority}"
+    if ver == "2.1":
+        return f"{IDnumberNM}{CompSep}{checkdigit}{CompSep}{codeidentifyingthecheckdigit}"
+    else:
+        return f"{IDnumberNM}{CompSep}{checkdigit}{CompSep}{codeidentifyingthecheckdigit}{CompSep}{assigningauthority}"
 }
 
 /// Generate CK_ACCOUNT_NO
@@ -509,7 +515,7 @@ ClassMethod GenerateCMCCD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         WhentoCharge = "D","O","R","S","T"
     WhentoCharge = random.choice(WhentoCharge)
-    datetime = iris.cls(__name__).GenerateTS(ver,charSep)
+    datetime = iris.cls(__name__).GenerateTS(ver,charSep,"1")
 
     return f"{WhentoCharge}{CompSep}{datetime}"
 }
@@ -566,7 +572,7 @@ ClassMethod GenerateCMDIN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     import iris
     # Get the Component separator
     CompSep = charSep[1:2]
-    Date = iris.cls(__name__).GenerateTS(ver,charSep)
+    Date = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     institutionname = iris.cls(__name__).GenerateCE(ver,charSep)
 
     return f"{Date}{CompSep}{institutionname}"
@@ -580,7 +586,7 @@ ClassMethod GenerateCMDLD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Get the Component separator
     CompSep = charSep[1:2]
     dischargelocation = iris.cls(__name__).GenerateID(ver,charSep)
-    effectivedate = iris.cls(__name__).GenerateTS(ver,charSep)
+    effectivedate = iris.cls(__name__).GenerateTS(ver,charSep,"1")
 
     return f"{dischargelocation}{CompSep}{effectivedate}"
 }
@@ -644,14 +650,44 @@ ClassMethod GenerateCMEIP(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 ClassMethod GenerateCMELD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 {
     # GenerateCMELD
-    import iris,random,string
+    # ELD Error Location and Description
+    import iris,importlib, random
+    import hl7apy as cr
+    #Get HL7 version related library
+    if ver in cr.SUPPORTED_LIBRARIES:      
+        message_with_descriptions = []
+        module_name = cr.SUPPORTED_LIBRARIES[ver]
+        lib = importlib.import_module(module_name)
+        #get tables reference
+        try:
+            TABLES = lib.tables.TABLES
+        except:
+            TABLES = {}
+        #get segment reference
+        try:
+            SEGMENTS = lib.segments.SEGMENTS
+        except:
+            SEGMENTS = {}
+
     # Get the Component separator
     CompSep = charSep[1:2]
-    SegmentID = iris.cls(__name__).GenerateST(ver,charSep)
-    Sequence = iris.cls(__name__).GenerateNM(ver,charSep)
-    FieldPosition = iris.cls(__name__).GenerateNM(ver,charSep)
-    CodeIdentifyingError = iris.cls(__name__).GenerateCE(ver,charSep)
-    return f"{SegmentID}{CompSep}{Sequence}{CompSep}{FieldPosition}{CompSep}{CodeIdentifyingError}"
+    
+    for idx, x in enumerate(SEGMENTS):
+        if idx == 0:
+            segList = [x]
+        else:
+            segList.append(x)
+    
+    SegmentID = random.choice(segList)
+    SegmentSequence = str(random.randint(1, 20))
+    FieldPosition = str(random.randint(1, 20))
+    try:
+        CodeIdentifyingError = TABLES["HL70357"][1]
+    except:
+        CodeIdentifyingError = "0","100","101","102","103","200","201","202","203","204","205","206","207"
+    CodeIdentifyingError = random.choice(CodeIdentifyingError)
+
+    return f"{SegmentID}{CompSep}{SegmentSequence}{CompSep}{FieldPosition}{CompSep}{CodeIdentifyingError}"
 }
 
 /// Generate CM_ELECTRODE
@@ -703,7 +739,7 @@ ClassMethod GenerateCMFINANCE(ver = "2.5", charSep = "|^~\&") [ Language = pytho
     except:
         financialclassID = "01","02","03","10","11","12","13","14","15","16","17","18","20","21","22","23","24","25","26","27","28","29","40","41","42","43","44","45","46","50"
     financialclassID = random.choice(financialclassID)
-    effectivedate = iris.cls(__name__).GenerateTS(ver,charSep)
+    effectivedate = iris.cls(__name__).GenerateTS(ver,charSep,"1")
 
     return f"{financialclassID}{CompSep}{effectivedate}"
 }
@@ -722,7 +758,7 @@ ClassMethod GenerateCMGROUPID(ver = "2.5", charSep = "|^~\&") [ Language = pytho
 }
 
 /// Generate CM_INTERNAL_LOCATION
-ClassMethod GenerateCMINTERNALLOCATION(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateCMINTERNALLOCATION(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # CMFINANCE
     import iris,importlib,random
@@ -739,6 +775,7 @@ ClassMethod GenerateCMINTERNALLOCATION(ver = "2.5", charSep = "|^~\&") [ Languag
             TABLES = {}    
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     nurseunitStation = iris.cls(__name__).GenerateID(ver,charSep)
     Room = iris.cls(__name__).GenerateID(ver,charSep)
     Bed = iris.cls(__name__).GenerateID(ver,charSep)
@@ -752,7 +789,10 @@ ClassMethod GenerateCMINTERNALLOCATION(ver = "2.5", charSep = "|^~\&") [ Languag
     Klinik = iris.cls(__name__).GenerateID(ver,charSep)
     Zentrum = iris.cls(__name__).GenerateID(ver,charSep)
 
-    return f"{nurseunitStation}{CompSep}{Room}{CompSep}{Bed}{CompSep}{FacilityID}{CompSep}{BedStatus}{CompSep}{Etage}{CompSep}{Klinik}{CompSep}{Zentrum}"
+    if subcomponent=="1":
+        return f"{nurseunitStation}{SubCompSep}{Room}{SubCompSep}{Bed}{SubCompSep}{FacilityID}{SubCompSep}{BedStatus}{SubCompSep}{Etage}{SubCompSep}{Klinik}{SubCompSep}{Zentrum}"
+    else:
+        return f"{nurseunitStation}{CompSep}{Room}{CompSep}{Bed}{CompSep}{FacilityID}{CompSep}{BedStatus}{CompSep}{Etage}{CompSep}{Klinik}{CompSep}{Zentrum}"
 }
 
 /// Generate CM_JOB_CODE
@@ -916,11 +956,11 @@ ClassMethod GenerateCMNDL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Using current time
     ini_time_for_now = datetime.now()
     if ver == "2.2":
-        interpretertechnician = iris.cls(__name__).GenerateCNPERSON(ver,charSep)
+        interpretertechnician = iris.cls(__name__).GenerateCNPERSON(ver,charSep,subcomponent="1")
         startdatetime = ini_time_for_now.strftime("%Y%m%d%H%M%S")
         enddatetime = ini_time_for_now + timedelta(days = 30)
         enddatetime = enddatetime.strftime("%Y%m%d%H%M%S")
-        location = iris.cls(__name__).GenerateCMINTERNALLOCATION(ver,charSep)
+        location = iris.cls(__name__).GenerateCMINTERNALLOCATION(ver,charSep,subcomponent="1")
         return f"{interpretertechnician}{CompSep}{startdatetime}{CompSep}{enddatetime}{CompSep}{location}"
     else:
         interpretertechnician = iris.cls(__name__).GenerateCNPERSON(ver,charSep)
@@ -939,7 +979,11 @@ ClassMethod GenerateCMNDL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         PatientLocationType = random.choice(PatientLocationType)
         Building = iris.cls(__name__).GenerateIS(ver,charSep)
         Floor = iris.cls(__name__).GenerateIS(ver,charSep)
-        return f"{interpretertechnician}{CompSep}{startdatetime}{CompSep}{enddatetime}{CompSep}{PointofCare}{CompSep}{Room}{CompSep}{Bed}{CompSep}{Facility}{CompSep}{LocationStatus}{CompSep}{PatientLocationType}{CompSep}{Building}{CompSep}{Floor}"
+
+        if ver == "2.2":
+            return f"{interpretertechnician}{CompSep}{startdatetime}{CompSep}{enddatetime}{CompSep}{PointofCare}"
+        else:
+            return f"{interpretertechnician}{CompSep}{startdatetime}{CompSep}{enddatetime}{CompSep}{PointofCare}{CompSep}{Room}{CompSep}{Bed}{CompSep}{Facility}{CompSep}{LocationStatus}{CompSep}{PatientLocationType}{CompSep}{Building}{CompSep}{Floor}"
 }
 
 /// Generate CM_OCD
@@ -949,7 +993,10 @@ ClassMethod GenerateCMOCD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     import iris
     # Get the Component separator
     CompSep = charSep[1:2]
-    occurrencecode = iris.cls(__name__).GenerateCE(ver,charSep)
+    if ver=="2.2":
+        occurrencecode = iris.cls(__name__).GenerateID(ver,charSep)
+    else:
+        occurrencecode = iris.cls(__name__).GenerateCE(ver,charSep)
     occurrencedate = iris.cls(__name__).GenerateDT(ver,charSep)
 
     return f"{occurrencecode}{CompSep}{occurrencedate}"
@@ -1063,7 +1110,7 @@ ClassMethod GenerateCMPCF(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         precerticationrequired = "N","Y"
     precerticationrequired = random.choice(precerticationrequired)
-    precertificationwindow = iris.cls(__name__).GenerateTS(ver,charSep)
+    precertificationwindow = iris.cls(__name__).GenerateTS(ver,charSep,"1")
    
     return f"{precertificationpatienttype}{CompSep}{precerticationrequired}{CompSep}{precertificationwindow}"
 }
@@ -1202,7 +1249,7 @@ ClassMethod GenerateCMPRACTITIONER(ver = "2.5", charSep = "|^~\&") [ Language = 
     # Get the Component separator
     CompSep = charSep[1:2]
 
-    ProcedurePractitionerID = iris.cls(__name__).GenerateCNPERSON(ver,charSep)
+    ProcedurePractitionerID = iris.cls(__name__).GenerateCNPERSON(ver,charSep,"1")
 
     try:
         procedurepractitionertype = TABLES["HL70133"][1]
@@ -1327,7 +1374,7 @@ ClassMethod GenerateCMRFR(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate CM_RI
-ClassMethod GenerateCMRI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateCMRI(ver = "2.5", charSep = "|^~\&",subcomponent="0") [ Language = python ]
 {
     # CMABSRI
     import iris,importlib,random
@@ -1344,6 +1391,7 @@ ClassMethod GenerateCMRI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
             TABLES = {}
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
 
     repeatpattern = iris.cls(__name__).GenerateIS(ver,charSep)
     try:
@@ -1351,8 +1399,10 @@ ClassMethod GenerateCMRI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         explicittimeintevall = "QnS","QnM","QnH","QnD","QnW","QnL","QnJd","BID","TID","QID","xID","QAM","QSHIFT","QOD","QHS","QPM","C","Uxxx","PRN","PRNxxx","Once","Meal Related Timings","A","P","I","M","D","V"
     explicittimeintevall = random.choice(explicittimeintevall)
- 
-    return f"{repeatpattern}{CompSep}{explicittimeintevall}"
+    if subcomponent=="0":
+        return f"{repeatpattern}{CompSep}{explicittimeintevall}"
+    else:
+        return f"{repeatpattern}{SubCompSep}{explicittimeintevall}"
 }
 
 /// Generate CM_RMC
@@ -1434,10 +1484,13 @@ ClassMethod GenerateCMSPS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     specimensourcenameorcode = random.choice(specimensourcenameorcode)
     additives = iris.cls(__name__).GenerateTX(ver,charSep)
     freetext = iris.cls(__name__).GenerateTX(ver,charSep)
-    bodysite = iris.cls(__name__).GenerateCE(ver,charSep)
-    sitemodifier = iris.cls(__name__).GenerateCE(ver,charSep)
-    collectionmodifiermethodcode = iris.cls(__name__).GenerateCE(ver,charSep)
-    return f"{specimensourcenameorcode}{CompSep}{additives}{CompSep}{freetext}{CompSep}{bodysite}{CompSep}{sitemodifier}{CompSep}{collectionmodifiermethodcode}"
+    bodysite = iris.cls(__name__).GenerateCE(ver,charSep,"1")
+    sitemodifier = iris.cls(__name__).GenerateCE(ver,charSep,"1")
+    collectionmodifiermethodcode = iris.cls(__name__).GenerateCE(ver,charSep,"1")
+    if ver == "2.2":
+        return f"{specimensourcenameorcode}{CompSep}{additives}{CompSep}{freetext}{CompSep}{bodysite}{CompSep}{sitemodifier}"
+    else:
+        return f"{specimensourcenameorcode}{CompSep}{additives}{CompSep}{freetext}{CompSep}{bodysite}{CompSep}{sitemodifier}{CompSep}{collectionmodifiermethodcode}"
 }
 
 /// Generate CM_UVC
@@ -1537,7 +1590,13 @@ ClassMethod GenerateCN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         assigningauthority = "AUSDVA","AUSHIC","CANAB","CANBC","CANMB","CANNB","CANNF","CANNS","CANNT","CANNU","CANON","CANPE","CANQC","CANSK","CANYT","NLVWS","USCDC","USHCFA","USSSA"
     assigningauthority = random.choice(assigningauthority)
-    return f"{IDnumberST}{CompSep}{familyname}{CompSep}{givenname}{CompSep}{middleinitialorname}{CompSep}{suffix}{CompSep}{prefix}{CompSep}{degree}{CompSep}{sourcetable}{CompSep}{assigningauthority}"
+
+    if ver == "2.1":
+        return f"{IDnumberST}{CompSep}{familyname}{CompSep}{givenname}{CompSep}{middleinitialorname}"    
+    elif ver == "2.2":
+        return f"{IDnumberST}{CompSep}{familyname}{CompSep}{givenname}{CompSep}{middleinitialorname}{CompSep}{suffix}{CompSep}{prefix}{CompSep}{degree}{CompSep}{sourcetable}"    
+    else:
+        return f"{IDnumberST}{CompSep}{familyname}{CompSep}{givenname}{CompSep}{middleinitialorname}{CompSep}{suffix}{CompSep}{prefix}{CompSep}{degree}{CompSep}{sourcetable}{CompSep}{assigningauthority}"
 }
 
 /// Generate CN_SIMPLE
@@ -1634,7 +1693,7 @@ ClassMethod GenerateCNS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Build CNE datatype
-ClassMethod GenerateCNE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateCNE(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     #CNE Coded with No Exceptions
     import iris,textwrap,random,importlib,string
@@ -1656,6 +1715,7 @@ ClassMethod GenerateCNE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
     fake = Faker()
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
 
 
     # Build the example Datatype
@@ -1701,7 +1761,7 @@ ClassMethod GenerateCNE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
     SecAltValueSetVersionID = iris.cls(__name__).GenerateDTM(ver,charSep)
 
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent==0:
         if ver < "2.7":
             return f"{Identifier}{CompSep}{Text}{CompSep}{NameofCodingSystem}{CompSep}{AlternateIdentifier}{CompSep}{AlternateText}{CompSep}{NameofAlternateCodingSystem}"
         else:
@@ -1773,7 +1833,7 @@ ClassMethod GenerateCNN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate CN_PERSON
-ClassMethod GenerateCNPERSON(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateCNPERSON(ver = "2.5", charSep = "|^~\&",subcomponent="0") [ Language = python ]
 {
     import iris,textwrap,random,importlib,string
     from faker import Faker
@@ -1794,6 +1854,7 @@ ClassMethod GenerateCNPERSON(ver = "2.5", charSep = "|^~\&") [ Language = python
     fake = Faker()
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     IDnumber = random.randint(100000000000000, 999999999999999)
     familiyname = fake.last_name()
     givenname = fake.first_name()
@@ -1806,7 +1867,10 @@ ClassMethod GenerateCNPERSON(ver = "2.5", charSep = "|^~\&") [ Language = python
         degree = "AAS","AA","ABA","AE","AS","BA","BBA","BE","BFA","BN","BS","BSL","BT","CER","DIP","DBA","DED","PHE","PHD","PHS","MD","DO","HS","JD","MA","MBA","MCE","MDI","MED","MEE","ME","MFA","MME","MS","MSL","MT","NG","SEC","TS"
     degree = random.choice(degree)
     sourcetableid = fake.pystr()[:4]
-    return f"{IDnumber}{CompSep}{familiyname}{CompSep}{givenname}{CompSep}{middleinitialorname}{CompSep}{suffix}{CompSep}{prefix}{CompSep}{degree}{CompSep}{sourcetableid}"
+    if subcomponent=="0":
+        return f"{IDnumber}{CompSep}{familiyname}{CompSep}{givenname}{CompSep}{middleinitialorname}{CompSep}{suffix}{CompSep}{prefix}{CompSep}{degree}{CompSep}{sourcetableid}"
+    else:
+        return f"{IDnumber}{SubCompSep}{familiyname}{SubCompSep}{givenname}{SubCompSep}{middleinitialorname}{SubCompSep}{suffix}{SubCompSep}{prefix}{SubCompSep}{degree}{SubCompSep}{sourcetableid}"
 }
 
 /// Generate CN_PHYSICIAN
@@ -1865,7 +1929,7 @@ ClassMethod GenerateCP(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Get the Component separator
     CompSep = charSep[1:2]
 
-    price = iris.cls(__name__).GenerateMO(ver,charSep)
+    price = iris.cls(__name__).GenerateMO(ver,charSep,"1")
     #try tables else use csv
     try:
         pricetype = TABLES["HL70205"][1]
@@ -1874,7 +1938,7 @@ ClassMethod GenerateCP(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     pricetype = random.choice(pricetype)
     fromvalue = iris.cls(__name__).GenerateNM(ver,charSep)
     tovalue = iris.cls(__name__).GenerateNM(ver,charSep)
-    rangeunits = iris.cls(__name__).GenerateCE(ver,charSep)
+    rangeunits = iris.cls(__name__).GenerateCE(ver,charSep,"1")
     # try tables else use csv
     try:
         rangetype = TABLES["HL70298"][1]
@@ -1886,7 +1950,7 @@ ClassMethod GenerateCP(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate CQ
-ClassMethod GenerateCQ(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateCQ(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # CQ Composite Quantity with Units
     import iris,random
@@ -1895,20 +1959,21 @@ ClassMethod GenerateCQ(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ La
     fake = Faker()
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     # Build data type
     Quantity = random.randint(1, 199999999)
     # units of measurement
     Units = "m","s","mol","A","K","cd","kg"
     Units = random.choice(Units)
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         return f"{Quantity}{CompSep}{Units}"
     else:
         return f"{Quantity}{SubCompSep}{Units}"
 }
 
 /// Generate CQ_QUANTITY
-ClassMethod GenerateCQQUANTITY(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateCQQUANTITY(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # CQQUANTITY
     import iris,random
@@ -1917,10 +1982,15 @@ ClassMethod GenerateCQQUANTITY(ver = "2.5", charSep = "|^~\&") [ Language = pyth
     fake = Faker()
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     # Build data type
     quantity = random.randint(1, 199999999)
-    units = iris.cls(__name__).GenerateCE(ver,charSep)
-    return f"{quantity}{CompSep}{units}"
+    units = iris.cls(__name__).GenerateST(ver,charSep)
+
+    if subcomponent=="0":
+        return f"{quantity}{CompSep}{units}"
+    else:
+        return f"{quantity}{SubCompSep}{units}"
 }
 
 /// Generate CQ_SIMPLE
@@ -2012,7 +2082,7 @@ ClassMethod GenerateCSU(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate CWE
-ClassMethod GenerateCWE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateCWE(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # CWE Coded with Exceptions
     import iris,random,importlib
@@ -2032,6 +2102,7 @@ ClassMethod GenerateCWE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
             TABLES = {}   
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]    
     # Build data type
     Identifier = iris.cls(__name__).GenerateST(ver,charSep)
     Text = iris.cls(__name__).GenerateST(ver,charSep)
@@ -2077,7 +2148,7 @@ ClassMethod GenerateCWE(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
         SecAltValueSetVersionID = iris.cls(__name__).GenerateDTM(ver,charSep)
 
         # if this is going to be a subcomponent then need to switch separator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         if ver <= "2.6":
             return f"{Identifier}{CompSep}{Text}{CompSep}{NameofCodingSystem}{CompSep}{AlternateIdentifier}{CompSep}{AlternateText}{CompSep}{NameofAlternateCodingSystem}{CompSep}{CodingSystemVersionID}{CompSep}{AlternateCodingSystemVersion}{CompSep}{OriginalText}"
         else:
@@ -2143,7 +2214,7 @@ ClassMethod GenerateCX(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         IdentifierTypeCode = "AM","AN","ANON","ANC","AND","ANT","APRN","BA","BC","BR","BRN","CC","CY","DDS","DEA","DI","DFN","DL","DN","DPM","DO","DR","DS","EI","EN","FI","GI","GL","GN","HC","JHN","IND","LI","LN","LR","MA","MB","MC","MCD","MCN","MCR","MD","MI","MR","MRT","MS","NE","NH","NI","NII","NIIP","NNxxx","NP","NPI","OD","PA","PCN","PE","PEN","PI","PN","PNT","PPN","PRC","PRN","PT","QA","RI","RPH","RN","RR","RRI","SL","SN","SR","SS","TAX","TN","U","UPIN","VN","VS","WC","WCN","XX"
     IdentifierTypeCode = random.choice(IdentifierTypeCode)
 
-    AssigningFacility = iris.cls(__name__).GenerateHD(ver,charSep)
+    AssigningFacility = fake.company()
 
     # Using current time
     ini_time_for_now = datetime.now()
@@ -2202,7 +2273,12 @@ ClassMethod GenerateDDI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Get the Component separator
     CompSep = charSep[1:2]
     DelayDays = iris.cls(__name__).GenerateNM(ver,charSep)
-    MonetaryAmount = iris.cls(__name__).GenerateMO(ver,charSep)
+
+    if ver < "2.4":
+        MonetaryAmount = iris.cls(__name__).GenerateNM(ver,charSep)
+    else:
+        MonetaryAmount = iris.cls(__name__).GenerateMO(ver,charSep,"1")
+
     NumberofDays = iris.cls(__name__).GenerateNM(ver,charSep)
 
     return f"{DelayDays}{CompSep}{MonetaryAmount}{CompSep}{NumberofDays}"
@@ -2222,7 +2298,7 @@ ClassMethod GenerateDIN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Get the Component separator
     CompSep = charSep[1:2]
     if ver < "2.7":
-        date = iris.cls(__name__).GenerateTS(ver,charSep)
+        date = iris.cls(__name__).GenerateTS(ver,charSep,"1")
         institutionname = fake.company()
     else:
         date = iris.cls(__name__).GenerateDTM(ver,charSep)
@@ -2240,7 +2316,7 @@ ClassMethod GenerateDLD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     CompSep = charSep[1:2]
     if ver < "2.7":
         DischargeLocation = iris.cls(__name__).GenerateIS(ver,charSep)
-        EffectiveDate = iris.cls(__name__).GenerateTS(ver,charSep)
+        EffectiveDate = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     else:
         DischargeLocation = iris.cls(__name__).GenerateCWE(ver,charSep)
         EffectiveDate = iris.cls(__name__).GenerateDTM(ver,charSep)
@@ -2289,12 +2365,13 @@ ClassMethod GenerateDLT(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate DR
-ClassMethod GenerateDR(ver = "2.5", charSep = "|^~\&", subCompSep = "None") [ Language = python ]
+ClassMethod GenerateDR(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # DR Date/Time Range
     from datetime import datetime, timedelta
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
 
 
     # Using current time
@@ -2304,10 +2381,10 @@ ClassMethod GenerateDR(ver = "2.5", charSep = "|^~\&", subCompSep = "None") [ La
     rangeenddatetime = ini_time_for_now + timedelta(days = 30)
     rangeenddatetime = rangeenddatetime.strftime("%Y%m%d%H%M%S")
 
-    if subCompSep=="None":
+    if subcomponent=="0":
         return f"{rangestartdatetime}{CompSep}{rangeenddatetime}"
     else:
-        return f"{rangestartdatetime}{subCompSep}{rangeenddatetime}"
+        return f"{rangestartdatetime}{SubCompSep}{rangeenddatetime}"
 }
 
 /// Generate DR_SIMPLE
@@ -2503,7 +2580,8 @@ ClassMethod GenerateELD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     SegmentID = random.choice(segList)
     SegmentSequence = str(random.randint(1, 20))
     FieldPosition = str(random.randint(1, 20))
-    CodeIdentifyingError = iris.cls(__name__).GenerateCE(ver,charSep)
+    CodeIdentifyingError = iris.cls(__name__).GenerateCE(ver,charSep,subcomponent="1")
+
     return f"{SegmentID}{CompSep}{SegmentSequence}{CompSep}{FieldPosition}{CompSep}{CodeIdentifyingError}"
 }
 
@@ -2555,7 +2633,7 @@ ClassMethod GenerateFC(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     CompSep = charSep[1:2]
     if ver < "2.7":
         FinancialClassCode = iris.cls(__name__).GenerateIS(ver,charSep)
-        EffectiveDate = iris.cls(__name__).GenerateTS(ver,charSep)
+        EffectiveDate = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     else:
         FinancialClassCode = iris.cls(__name__).GenerateCWE(ver,charSep)
         EffectiveDate = iris.cls(__name__).GenerateDTM(ver,charSep)
@@ -2701,7 +2779,7 @@ ClassMethod GenerateICD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     CertificationRequired = random.choice(CertificationRequired)
     if ver < "2.6":
-        DateTimeCertificationRequire = iris.cls(__name__).GenerateTS(ver,charSep)
+        DateTimeCertificationRequire = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     else:
         DateTimeCertificationRequire = iris.cls(__name__).GenerateDTM(ver,charSep)
 
@@ -2899,8 +2977,8 @@ ClassMethod GenerateMFI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         FileLevelEventCode = "REP","UPD"
     FileLevelEventCode = random.choice(FileLevelEventCode)
-    EnteredDateTime = iris.cls(__name__).GenerateTS(ver,charSep)
-    EffectiveDateTime = iris.cls(__name__).GenerateTS(ver,charSep)
+    EnteredDateTime = iris.cls(__name__).GenerateTS(ver,charSep,"1")
+    EffectiveDateTime = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     try:
         ResponseLevelCode = TABLES["HL70179"][1]
     except:
@@ -2910,15 +2988,16 @@ ClassMethod GenerateMFI(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate MO
-ClassMethod GenerateMO(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateMO(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # MO Money
     import iris
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]    
     Quantity = iris.cls(__name__).GenerateNM(ver,charSep)
     Denomination = iris.cls(__name__).GenerateID(ver,charSep)
-    if SubCompSep == "None":
+    if subcomponent=="0":
         return f"{Quantity}{CompSep}{Denomination}"
     else:
         return f"{Quantity}{SubCompSep}{Denomination}"
@@ -2931,14 +3010,14 @@ ClassMethod GenerateMOC(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     import iris
     # Get the Component separator
     CompSep = charSep[1:2]
-    MonetaryAmount = iris.cls(__name__).GenerateMO(ver,charSep)
+    MonetaryAmount = iris.cls(__name__).GenerateMO(ver,charSep,"1")
     ChargeCode = iris.cls(__name__).GenerateCE(ver,charSep)
 
     return f"{MonetaryAmount}{CompSep}{ChargeCode}"
 }
 
 /// Generate MOP
-ClassMethod GenerateMOP(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateMOP(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # MOP Money or Percentage
     import iris,random,importlib
@@ -2961,6 +3040,7 @@ ClassMethod GenerateMOP(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
 
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]    
     try:
         MoneyorPercentageIndicator=TABLES["HL70148"][1]
     except:
@@ -2969,7 +3049,7 @@ ClassMethod GenerateMOP(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
     MoneyorPercentageQuantity = iris.cls(__name__).GenerateNM(ver,charSep)
 
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         if ver < "2.5":
             return f"{MoneyorPercentageIndicator}{CompSep}{MoneyorPercentageQuantity}"
         else:
@@ -3063,8 +3143,8 @@ ClassMethod GenerateNDL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 
     else:
         Name = iris.cls(__name__).GenerateCNN(ver,charSep)
-    StartDatetime = iris.cls(__name__).GenerateTS(ver,charSep)
-    EndDatetime = iris.cls(__name__).GenerateTS(ver,charSep)
+    StartDatetime = iris.cls(__name__).GenerateTS(ver,charSep,"1")
+    EndDatetime = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     PointofCare = iris.cls(__name__).GenerateIS(ver,charSep)
     Room = iris.cls(__name__).GenerateIS(ver,charSep)
     Bed = iris.cls(__name__).GenerateIS(ver,charSep)
@@ -3077,18 +3157,20 @@ ClassMethod GenerateNDL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate NR
-ClassMethod GenerateNR(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateNR(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # NR Numeric Range
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]    
+
     import iris,random
 
     LowValue = iris.cls(__name__).GenerateNM(ver,charSep)
     HighValue = iris.cls(__name__).GenerateNM(ver,charSep)+random.randint(1, 999999)
 
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         return f"{LowValue}{CompSep}{HighValue}"
     else:
         return f"{LowValue}{SubCompSep}{HighValue}"
@@ -3109,26 +3191,27 @@ ClassMethod GenerateOCD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate OG
-ClassMethod GenerateOG(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateOG(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # OG Observation Grouper
     import iris
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
 
     OriginalSubIdentifier = iris.cls(__name__).GenerateST(ver,charSep)
     Group = iris.cls(__name__).GenerateNM(ver,charSep)
     Sequence = iris.cls(__name__).GenerateNM(ver,charSep)
     Identifier = iris.cls(__name__).GenerateST(ver,charSep)
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         return f"{OriginalSubIdentifier}{CompSep}{Group}{CompSep}{Sequence}{CompSep}{Identifier}"
     else:
         return f"{OriginalSubIdentifier}{SubCompSep}{Group}{SubCompSep}{Sequence}{SubCompSep}{Identifier}"
 }
 
 /// Generate OSD
-ClassMethod GenerateOSD(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateOSD(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # OSD Order Sequence Definition
     import iris,random,importlib
@@ -3148,6 +3231,7 @@ ClassMethod GenerateOSD(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
             TABLES = {}    
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     try:
         SequenceResultsFlag = TABLES["HL70524"][1]
     except:
@@ -3183,7 +3267,7 @@ ClassMethod GenerateOSD(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ L
     FillerOrderNumUnivIDType = random.choice(FillerOrderNumUnivIDType)
 
     # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         return f"{SequenceResultsFlag}{CompSep}{PlacerOrderNumberEntityIdent}{CompSep}{PlacerOrderNumberNamespaceID}{CompSep}{FillerOrderNumberEntityIdent}{CompSep}{FillerOrderNumberNamespaceID}{CompSep}{SequenceConditionValue}{CompSep}{MaximumNumberofRepeats}{CompSep}{PlacerOrderNumUnivID}{CompSep}{PlacerOrderNumUnivIDType}{CompSep}{FillerOrderNumUnivID}{CompSep}{FillerOrderNumUnivIDType}"
     else:
         return f"{SequenceResultsFlag}{SubCompSep}{PlacerOrderNumberEntityIdent}{SubCompSep}{PlacerOrderNumberNamespaceID}{SubCompSep}{FillerOrderNumberEntityIdent}{SubCompSep}{FillerOrderNumberNamespaceID}{SubCompSep}{SequenceConditionValue}{SubCompSep}{MaximumNumberofRepeats}{SubCompSep}{PlacerOrderNumUnivID}{SubCompSep}{PlacerOrderNumUnivIDType}{SubCompSep}{FillerOrderNumUnivID}{SubCompSep}{FillerOrderNumUnivIDType}"
@@ -3242,7 +3326,7 @@ ClassMethod GeneratePCF(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     precertificationrequired = random.choice(precertificationrequired)
 
 
-    precertificationwindow = iris.cls(__name__).GenerateTS(ver,charSep)
+    precertificationwindow = iris.cls(__name__).GenerateTS(ver,charSep,"1")
     
 
     return f"{precertificationpatienttype}{CompSep}{precertificationrequired}{CompSep}{precertificationwindow}"
@@ -3298,6 +3382,9 @@ ClassMethod GeneratePL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # PL Person Location
     import iris,random,importlib,string
     import hl7apy as cr
+    from faker import Faker
+    # Initialize Faker instance
+    fake = Faker()
     #Get HL7 version related library
     if ver in cr.SUPPORTED_LIBRARIES:      
         message_with_descriptions = []
@@ -3310,28 +3397,30 @@ ClassMethod GeneratePL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
             TABLES = {}    
     # Get the Component separator
     CompSep = charSep[1:2]
-    if ver < "2.7":
-        Building = iris.cls(__name__).GenerateIS(ver,charSep)
-        LocationDescription = iris.cls(__name__).GenerateST(ver,charSep)
-        ComprehensiveLocationIdentif = iris.cls(__name__).GenerateEI(ver,charSep)
-        AssigningAuthorityforLocatio = iris.cls(__name__).GenerateHD(ver,charSep)
-
-    else:
-
-        Building = iris.cls(__name__).GenerateHD(ver,charSep)
-        LocationDescription = iris.cls(__name__).GenerateST(ver,charSep)
-        ComprehensiveLocationIdentif = iris.cls(__name__).GenerateEI(ver,charSep)
-        AssigningAuthorityforLocatio = iris.cls(__name__).GenerateHD(ver,charSep)
 
     PointofCare = "ICU","Med-Surg","ED","OR","PACU","ASU","L&D","NICU","CVICU","CATHLAB","ORTHO","IR","ENDO","PEDS","PICU","PSYCH","REHAB","2E","2N","3W","3S","4"
     PointofCare = random.choice(PointofCare)
+
     Room = str(random.randint(1,2010))
+
     Bed = "A","B"
     Bed = random.choice(Bed)
+
     Facility = "Communitycare Hospital","Familycare Haven","Healthlink Clinic","Heartfelt Healing Clinic","Holistic Health Oasis","Orthocare Orthopedic Clinic","Patients Choice Medical Clinic","Warm Embrace Healthcare","Advanced Pediatrics associates","AllCare family medicine","Aspire To Thrive Clinic","Atlanta Medical Group","Austin Carehub Medical Center","Austin Health Clinic","Balancelife Medical Center","Beyondlimits Wellness","Biofusion Clinic","Biorevolution Care","Biotech breakthroughs","Blossomhealth Integrative Medicine","Bodylogic clinic","Boston health and Wellness","Brighthorizon Health","Brooklyn Neighborhood Hospital"
     Facility = random.choice(Facility)
+    
     LocationStatus = "Dirty","Clean"
     LocationStatus = random.choice(LocationStatus)
+
+    Building = fake.company()
+
+    Floor = Room[0]
+
+    LocationDescription = iris.cls(__name__).GenerateST(ver,charSep)
+
+    ComprehensiveLocationIdentif = iris.cls(__name__).GenerateEI(ver,charSep)
+
+    AssigningAuthorityforLocatio = iris.cls(__name__).GenerateHD(ver,charSep)
         # get table values
     try:
         PersonLocationType = TABLES["HL70305"][1]
@@ -3339,9 +3428,11 @@ ClassMethod GeneratePL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         PersonLocationType = "C","D","H","N","O","P","S"
     # pick one of the values
     PersonLocationType = random.choice(PersonLocationType)
-    Floor = Room[0]
 
-    return f"{PointofCare}{CompSep}{Room}{CompSep}{Bed}{CompSep}{Facility}{CompSep}{LocationStatus}{CompSep}{PersonLocationType}{CompSep}{Building}{CompSep}{Floor}{CompSep}{LocationDescription}{CompSep}{ComprehensiveLocationIdentif}{CompSep}{AssigningAuthorityforLocatio}"
+    if ver < "2.4":
+        return f"{PointofCare}{CompSep}{Room}{CompSep}{Bed}{CompSep}{Facility}{CompSep}{LocationStatus}{CompSep}{PersonLocationType}{CompSep}{Building}{CompSep}{Floor}{CompSep}{LocationDescription}"
+    else:
+        return f"{PointofCare}{CompSep}{Room}{CompSep}{Bed}{CompSep}{Facility}{CompSep}{LocationStatus}{CompSep}{PersonLocationType}{CompSep}{Building}{CompSep}{Floor}{CompSep}{LocationDescription}{CompSep}{ComprehensiveLocationIdentif}{CompSep}{AssigningAuthorityforLocatio}"
 }
 
 /// Generate PLN
@@ -3497,7 +3588,7 @@ ClassMethod GeneratePPN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         IdentifierTypeCode = "AM","AN","ANON","ANC","AND","ANT","APRN","BA","BC","BR","BRN","CC","CY","DDS","DEA","DI","DFN","DL","DN","DPM","DO","DR","DS","EI","EN","FI","GI","GL","GN","HC","JHN","IND","LI","LN","LR","MA","MB","MC","MCD","MCN","MCR","MD","MI","MR","MRT","MS","NE","NH","NI","NII","NIIP","NNxxx","NP","NPI","OD","PA","PCN","PE","PEN","PI","PN","PNT","PPN","PRC","PRN","PT","QA","RI","RPH","RN","RR","RRI","SL","SN","SR","SS","TAX","TN","U","UPIN","VN","VS","WC","WCN","XX"
     IdentifierTypeCode = random.choice(IdentifierTypeCode)
     AssigningFacility = iris.cls(__name__).GenerateHD(ver,CompSep)
-    DateTimeActionPerformed = iris.cls(__name__).GenerateTS(ver,CompSep)
+    DateTimeActionPerformed = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
     # NameRepresentationCode logic
     try:
         NameRepresentationCode = TABLES["HL70465"][1]
@@ -3505,15 +3596,15 @@ ClassMethod GeneratePPN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         NameRepresentationCode = "I","A","P"
     NameRepresentationCode = random.choice(NameRepresentationCode)
     NameContext = iris.cls(__name__).GenerateCE(ver,CompSep)
-    NameValidityRange = iris.cls(__name__).GenerateDR(ver,CompSep,SubCompSep)
+    NameValidityRange = iris.cls(__name__).GenerateDR(ver,CompSep,"1")
     # NameAssemblyOrder logic
     try:
         NameAssemblyOrder = TABLES["HL70444"][1]
     except:
         NameAssemblyOrder = "G","F"
     NameAssemblyOrder = random.choice(NameAssemblyOrder)
-    EffectiveDate = iris.cls(__name__).GenerateTS(ver,CompSep)
-    ExpirationDate = iris.cls(__name__).GenerateTS(ver,CompSep)
+    EffectiveDate = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
+    ExpirationDate = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
     ProfessionalSuffix = iris.cls(__name__).GenerateST(ver,CompSep)
     AssigningJurisdiction = iris.cls(__name__).GenerateCWE(ver,CompSep)
     AssigningAgencyorDepartment = iris.cls(__name__).GenerateCWE(ver,CompSep)
@@ -3563,13 +3654,13 @@ ClassMethod GeneratePRL(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     CompSep = charSep[1:2] 
     SubCompSep = charSep[4:5]
     if ver < "2.6":
-        ParentObservationIdentifier = iris.cls(__name__).GenerateCE(ver,CompSep,SubCompSep)
+        ParentObservationIdentifier = iris.cls(__name__).GenerateCE(ver,CompSep,"1")
     else:
-        ParentObservationIdentifier = iris.cls(__name__).GenerateCWE(ver,CompSep,SubCompSep)
+        ParentObservationIdentifier = iris.cls(__name__).GenerateCWE(ver,CompSep,"1")
     if ver < "2.8.2":
         ParentObservationSubidentifi = iris.cls(__name__).GenerateST(ver,CompSep)
     else:
-        ParentObservationSubidentifi = iris.cls(__name__).GenerateOG(ver,CompSep,SubCompSep)
+        ParentObservationSubidentifi = iris.cls(__name__).GenerateOG(ver,CompSep,"1")
     ParentObservationValueDescri = iris.cls(__name__).GenerateTX(ver,CompSep)
 
     return f"{ParentObservationIdentifier}{CompSep}{ParentObservationSubidentifi}{CompSep}{ParentObservationValueDescri}"
@@ -3643,7 +3734,7 @@ ClassMethod GeneratePTA(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     AmountClass = random.choice(AmountClass)
 
     MoneyorPercentageQuantity = iris.cls(__name__).GenerateNM(ver,CompSep)
-    MoneyorPercentage = iris.cls(__name__).GenerateMOP(ver,CompSep,SubCompSep)
+    MoneyorPercentage = iris.cls(__name__).GenerateMOP(ver,CompSep,"1")
 
     return f"{PolicyType}{CompSep}{AmountClass}{CompSep}{MoneyorPercentageQuantity}{CompSep}{MoneyorPercentage}"
 }
@@ -3820,14 +3911,14 @@ ClassMethod GenerateRFR(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     CompSep = charSep[1:2]
     SubCompSep = charSep[4:5]
 
-    NumericRange = iris.cls(__name__).GenerateNR(ver,CompSep,SubCompSep)
+    NumericRange = iris.cls(__name__).GenerateNR(ver,CompSep,"1")
     try:
         AdministrativeSex = TABLES["HL70001"][1]
     except:
         AdministrativeSex = "F","M","O","U","A","N"
     AdministrativeSex = random.choice(AdministrativeSex)
-    AgeRange = iris.cls(__name__).GenerateNR(ver,CompSep,SubCompSep)
-    GestationalAgeRange = iris.cls(__name__).GenerateNR(ver,CompSep,SubCompSep)
+    AgeRange = iris.cls(__name__).GenerateNR(ver,CompSep,"1")
+    GestationalAgeRange = iris.cls(__name__).GenerateNR(ver,CompSep,"1")
     Species = "Giant Panda","Giant Tortoise","Great White Shark","Greater One-Horned Rhino","Hippopotamus","Leatherback Turtle","Lion","Loggerhead Turtle","Marine Iguana","Olive Ridley Turtle","Polar Bear","Snow Leopard","Southern rockhopper penguin","Albacore Tuna","Beluga","Greater Sage-Grouse","Jaguar","Mountain Plover","Plains Bison","White Rhino","Yellowfin Tuna","Arctic Fox","Arctic Wolf","Beaver","Bowhead Whale","Brown Bear","Common Bottlenose Dolphin","Gray Whale","Macaw","Narwhal","Pronghorn","Skipjack Tuna","Swift Fox","Tree Kangaroo","African Elephant","Amazon River Dolphin","Continental Tiger","Dolphins and Porpoises","Elephant","Gorilla","Pacific Salmon","Pangolin","Penguin","Poison Dart Frog","Rhino","Seals","Shark","Sloth","Tuna","African forest elephant","Amur Leopard","Black Rhino","Bornean Orangutan","Cross River Gorilla","Eastern Lowland Gorilla","Hawksbill Turtle","Javan Rhino","Orangutan","Saola","Sumatran Elephant","Sumatran Orangutan","Sumatran Rhino","Sunda Tiger","Vaquita","Western Lowland Gorilla","Yangtze Finless Porpoise","African savanna elephant","African Wild Dog","Asian Elephant","Black-footed Ferret","Blue Whale","Bluefin Tuna","Bonobo","Bornean Elephant","Chimpanzee","Fin Whale","Galápagos Penguin","Ganges River Dolphin","Green Turtle","Hector's Dolphin","Humphead Wrasse","Indian Elephant","Indus River Dolphin","Irrawaddy Dolphin","Monarch Butterfly","Mountain Gorilla","North Atlantic Right Whale","Red Panda","Sea Lions","Sea Turtle","Sei Whale","Sri Lankan Elephant","Tiger","Whale","Whale Shark","Bigeye Tuna","Black Spider Monkey","Cheetah","Dugong","Human"
     Species = random.choice(Species)
     Racesubspecies = iris.cls(__name__).GenerateST(ver,CompSep)
@@ -3837,7 +3928,7 @@ ClassMethod GenerateRFR(ver = "2.5", charSep = "|^~\&") [ Language = python ]
 }
 
 /// Generate RI
-ClassMethod GenerateRI(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ Language = python ]
+ClassMethod GenerateRI(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # RI Repeat Interval
     import iris,importlib, random
@@ -3855,6 +3946,7 @@ ClassMethod GenerateRI(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ La
 
     # Get the Component separator
     CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     try:
         RepeatPattern = TABLES["HL0335"][1]
     except:
@@ -3889,7 +3981,7 @@ ClassMethod GenerateRI(ver = "2.5", charSep = "|^~\&", SubCompSep = "None") [ La
             RepeatPattern = replacNum + "ID"
     ExplicitTimeInterval = iris.cls(__name__).GenerateST(ver,CompSep)
         # If this is a subcomponent then use subcompsep else use component seperator
-    if SubCompSep=="None":
+    if subcomponent=="0":
         return f"{RepeatPattern}{CompSep}{ExplicitTimeInterval}"
     else:
         return f"{RepeatPattern}{SubCompSep}{ExplicitTimeInterval}"
@@ -3927,7 +4019,7 @@ ClassMethod GenerateRMC(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         AmountType = "DF","LM","PC","RT","UL"
     AmountType = random.choice(AmountType)
     CoverageAmount = iris.cls(__name__).GenerateNM(ver,CompSep)
-    MoneyorPercentage = iris.cls(__name__).GenerateMOP(ver,CompSep,SubCompSep)
+    MoneyorPercentage = iris.cls(__name__).GenerateMOP(ver,CompSep,"1")
 
     return f"{RoomType}{CompSep}{AmountType}{CompSep}{CoverageAmount}{CompSep}{MoneyorPercentage}"
 }
@@ -4004,7 +4096,7 @@ ClassMethod GenerateRPT(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     if ver < "2.7":
         PeriodUnits = iris.cls(__name__).GenerateIS(ver,CompSep)
     else:
-        PeriodUnits = iris.cls(__name__).GenerateCWE(ver,CompSep,SubCompSep)
+        PeriodUnits = iris.cls(__name__).GenerateCWE(ver,CompSep,"1")
     try:
         InstitutionSpecifiedTime = TABLES["HL0527"][1]
     except:
@@ -4019,7 +4111,7 @@ ClassMethod GenerateRPT(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     if ver < "2.7":
         EventOffsetUnits = iris.cls(__name__).GenerateIS(ver,CompSep)
     else:
-        EventOffsetUnits = iris.cls(__name__).GenerateCWE(ver,CompSep,SubCompSep)
+        EventOffsetUnits = iris.cls(__name__).GenerateCWE(ver,CompSep,"1")
     GeneralTimingSpecification = iris.cls(__name__).GenerateGTS(ver,CompSep)
 
     return f"{RepeatPatternCode}{CompSep}{CalendarAlignment}{CompSep}{PhaseRangeBeginValue}{CompSep}{PhaseRangeEndValue}{CompSep}{PeriodQuantity}{CompSep}{PeriodUnits}{CompSep}{InstitutionSpecifiedTime}{CompSep}{Event}{CompSep}{EventOffsetQuantity}{CompSep}{EventOffsetUnits}{CompSep}{GeneralTimingSpecification}"
@@ -4183,7 +4275,7 @@ ClassMethod GenerateSPS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     CompSep = charSep[1:2]
     SubCompSep = charSep[4:5]
     
-    SpecimenSourceNameorCode = iris.cls(__name__).GenerateCWE(ver,charSep,SubCompSep)
+    SpecimenSourceNameorCode = iris.cls(__name__).GenerateCWE(ver,charSep,"1")
     try:
         Additives = TABLES["HL70371"][1]
     except:
@@ -4200,7 +4292,7 @@ ClassMethod GenerateSPS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         SiteModifier = "ANT","BIL","DIS","EXT","LAT","L","LOW","MED","POS","PRO","LLQ","LUQ","RLQ","RUQ","R","UPP"
     SiteModifier = random.choice(SiteModifier)
-    CollectionMethodModifierCode = iris.cls(__name__).GenerateCWE(ver,charSep,SubCompSep)
+    CollectionMethodModifierCode = iris.cls(__name__).GenerateCWE(ver,charSep,"1")
     try:
         SpecimenRole = TABLES["HL70369"][1]
     except:
@@ -4290,8 +4382,14 @@ ClassMethod GenerateTQ(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Get the Component separator
     CompSep = charSep[1:2]
     SubCompSep = charSep[4:5]
-    Quantity = iris.cls(__name__).GenerateCQ(ver,charSep,SubCompSep)
-    Interval = iris.cls(__name__).GenerateRI(ver,charSep,SubCompSep)
+    if ver == "2.2":
+        Quantity = iris.cls(__name__).GenerateCQQUANTITY(ver,charSep,"1")
+    else:
+        Quantity = iris.cls(__name__).GenerateCQ(ver,charSep,"1")
+    if ver == "2.2":
+        Interval = iris.cls(__name__).GenerateCMRI(ver,charSep,"1")
+    else:
+        Interval = iris.cls(__name__).GenerateRI(ver,charSep,"1")
     Duration = iris.cls(__name__).GenerateST(ver,charSep)
 
     # Using current time
@@ -4314,23 +4412,44 @@ ClassMethod GenerateTQ(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         Conjunction = "S","A","C"
     Conjunction = random.choice(Conjunction)
-    OrderSequencing = iris.cls(__name__).GenerateOSD(ver,charSep,SubCompSep)
-    if ver < "2.6":
-        OccurrenceDuration = iris.cls(__name__).GenerateCE(ver,charSep,SubCompSep)
+
+    if ver == "2.2":
+        OrderSequencing = iris.cls(__name__).GenerateST(ver,charSep)
     else:
-        OccurrenceDuration = iris.cls(__name__).GenerateCWE(ver,charSep,SubCompSep)
+        OrderSequencing = iris.cls(__name__).GenerateOSD(ver,charSep,"1")
+
+    if ver < "2.6":
+        OccurrenceDuration = iris.cls(__name__).GenerateCE(ver,charSep,"1")
+    else:
+        OccurrenceDuration = iris.cls(__name__).GenerateCWE(ver,charSep,"1")
     TotalOccurrences = iris.cls(__name__).GenerateNM(ver,charSep)
 
-    return f"{Quantity}{CompSep}{Interval}{CompSep}{Duration}{CompSep}{StartDateTime}{CompSep}{EndDateTime}{CompSep}{Priority}{CompSep}{Condition}{CompSep}{Text}{CompSep}{Conjunction}{CompSep}{OrderSequencing}{CompSep}{OccurrenceDuration}{TotalOccurrences}"
+    if ver >= "2.4":
+        return f"{Quantity}{CompSep}{Interval}{CompSep}{Duration}{CompSep}{StartDateTime}{CompSep}{EndDateTime}{CompSep}{Priority}{CompSep}{Condition}{CompSep}{Text}{CompSep}{Conjunction}{CompSep}{OrderSequencing}{CompSep}{OccurrenceDuration}{TotalOccurrences}"
+    else:
+        return f"{Quantity}{CompSep}{Interval}{CompSep}{Duration}{CompSep}{StartDateTime}{CompSep}{EndDateTime}{CompSep}{Priority}{CompSep}{Condition}{CompSep}{Text}{CompSep}{Conjunction}{CompSep}{OrderSequencing}"
 }
 
 /// Generate Time Stamp
-ClassMethod GenerateTS(ver = "2.5", charSep = "|^~\&") [ Language = python ]
+ClassMethod GenerateTS(ver = "2.5", charSep = "|^~\&", subcomponent="0") [ Language = python ]
 {
     # TS Time Stamp
     # YYYYMMDD[HHMM[SS[.SSSS]]][+/-ZZZZ]^<degree of precision>  
+    # Get the Component separator
+    CompSep = charSep[1:2]
+    SubCompSep = charSep[4:5]
     from datetime import datetime
-    return datetime.now().strftime('%Y%m%d%H%M%S')
+    import random
+    time = datetime.now().strftime('%Y%m%d%H%M%S')
+    try:
+        precision = TABLES["HL0529"][1]
+    except:
+        precision = "Y","L","D","H","M","S" 
+    precision = random.choice(precision) 
+    if subcomponent=="0":
+        return f"{time}{CompSep}{precision}"
+    else:
+        return f"{time}{SubCompSep}{precision}"
 }
 
 /// Generate Text Data
@@ -4436,13 +4555,13 @@ ClassMethod GenerateUVC(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     if ver < "2.5":
         ValueCode = iris.cls(__name__).GenerateIS(ver,charSep)
     elif ver < "2.7":
-        ValueCode = iris.cls(__name__).GenerateCNE(ver,charSep,SubCompSep)
+        ValueCode = iris.cls(__name__).GenerateCNE(ver,charSep,"1")
     else:
-        ValueCode = iris.cls(__name__).GenerateCWE(ver,charSep,SubCompSep)
+        ValueCode = iris.cls(__name__).GenerateCWE(ver,charSep,"1")
     if ver < "2.5":
         ValueAmount = iris.cls(__name__).GenerateNM(ver,charSep)
     else:
-        ValueAmount = iris.cls(__name__).GenerateMO(ver,charSep)
+        ValueAmount = iris.cls(__name__).GenerateMO(ver,charSep,"1")
     if ver < "2.7":
         return f"{ValueCode}{CompSep}{ValueAmount}"
     else:
@@ -4548,19 +4667,29 @@ ClassMethod GenerateXAD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Get the Component separator
     CompSep = charSep[1:2] 
     SubCompSep = charSep[4:5]
+
     # Build the example Datatype
+
     # address = fake.address()
     fstreetaddress = fake.street_address()
+
     fcity = fake.city()
+
     fstate = fake.state() 
+
     fpostcode = fake.postcode()
 
     ############################
     StreetAddress = fstreetaddress
+
     OtherDesignation = "A1"
+
     City = fcity
+
     StateorProvince = fstate
+
     ZiporPostalCode = fpostcode
+
     Country = fake.country_code('alpha-3')
     #
     try:
@@ -4568,10 +4697,14 @@ ClassMethod GenerateXAD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         AT = "BA","BI","N","BDL","F","C","B","H","L","M","O","P","RH","BR","S","SH","TM","V"
     AddressType = random.choice(AT)
+
     OtherGeographicDesignation = fake.current_country()
+
     CountyParishCode = Country
+
     # Census Tract number(.number) https://www.census.gov/geographies/reference-maps/2020/geo/2020pl-maps/2020-census-tract.html
     CensusTract = iris.cls(__name__).GenerateIS(ver,charSep)
+
     # AddressRepresentationCode logic
     try:
         AddressRepresentationCode = TABLES["HL70465"][1]
@@ -4579,7 +4712,7 @@ ClassMethod GenerateXAD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         AddressRepresentationCode = "I","A","P"
     AddressRepresentationCode = random.choice(AddressRepresentationCode)
 
-    AddressValidityRange = iris.cls(__name__).GenerateDR(ver,charSep,SubCompSep)
+    AddressValidityRange = iris.cls(__name__).GenerateDR(ver,charSep,"1")
     EffectiveDate = iris.cls(__name__).GenerateIS(ver,charSep)
     ExpirationDate = iris.cls(__name__).GenerateIS(ver,charSep)
 
@@ -4587,48 +4720,45 @@ ClassMethod GenerateXAD(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     # Using current time
     ini_time_for_now = datetime.now()
     
-    if ver < "2.6":
-        EffectiveDate = ini_time_for_now.strftime("%Y%m%d%H%M%S")
-        ExpirationDate = ini_time_for_now + timedelta(days = 30)
-        ExpirationDate = ExpirationDate.strftime("%Y%m%d%H%M%S")
-    else:
-        EffectiveDate = ini_time_for_now.strftime("%Y%m%d%H%M%S")
-        ExpirationDate = ini_time_for_now + timedelta(days = 30)
-        ExpirationDate = ExpirationDate.strftime("%Y%m%d%H%M%S")
+    EffectiveDate = ini_time_for_now.strftime("%Y%m%d%H%M%S")
+    ExpirationDate = ini_time_for_now + timedelta(days = 30)
+    ExpirationDate = ExpirationDate.strftime("%Y%m%d%H%M%S")
 
-    if ver < "2.6":
+
+    try:
+        ExpirationReason = TABLES["HL70616"][1]
+    except:
+        ExpirationReason = "Y","N"
+    ExpirationReason = random.choice(ExpirationReason)
+    try:
+        TemporaryIndicator = TABLES["HL70136"][1]
+    except:
+        TemporaryIndicator = "Y","N"
+    TemporaryIndicator = random.choice(TemporaryIndicator)
+    try:
+        BadAddressIndicator = TABLES["HL70136"][1]
+    except:
+        BadAddressIndicator = "Y","N"
+    BadAddressIndicator = random.choice(BadAddressIndicator)
+    try:
+        AddressUsage = TABLES["HL70617"][1]
+    except:
+        AddressUsage = "M","V","C"
+    AddressUsage = random.choice(AddressUsage)
+    Addressee = iris.cls(__name__).GenerateST(ver,charSep)
+    Comment = iris.cls(__name__).GenerateST(ver,charSep)
+    PreferenceOrder = iris.cls(__name__).GenerateNM(ver,charSep)
+    try:
+        ProtectionCode = TABLES["HL70618"][1]
+    except:
+        ProtectionCode = "LI","UL","UP"
+    ProtectionCode = random.choice(ProtectionCode)
+    AddressIdentifier = iris.cls(__name__).GenerateEI(ver,charSep)
+    if ver < "2.4":
+        return f"{StreetAddress}{CompSep}{OtherDesignation}{CompSep}{City}{CompSep}{StateorProvince}{CompSep}{ZiporPostalCode}{CompSep}{Country}{CompSep}{AddressType}{CompSep}{OtherGeographicDesignation}{CompSep}{CountyParishCode}{CompSep}{CensusTract}{CompSep}{AddressRepresentationCode}"
+    elif ver < "2.6":
         return f"{StreetAddress}{CompSep}{OtherDesignation}{CompSep}{City}{CompSep}{StateorProvince}{CompSep}{ZiporPostalCode}{CompSep}{Country}{CompSep}{AddressType}{CompSep}{OtherGeographicDesignation}{CompSep}{CountyParishCode}{CompSep}{CensusTract}{CompSep}{AddressRepresentationCode}{CompSep}{AddressValidityRange}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}"
     else:
-        try:
-            ExpirationReason = TABLES["HL70616"][1]
-        except:
-            ExpirationReason = "Y","N"
-        ExpirationReason = random.choice(ExpirationReason)
-        try:
-            TemporaryIndicator = TABLES["HL70136"][1]
-        except:
-            TemporaryIndicator = "Y","N"
-        TemporaryIndicator = random.choice(TemporaryIndicator)
-        try:
-            BadAddressIndicator = TABLES["HL70136"][1]
-        except:
-            BadAddressIndicator = "Y","N"
-        BadAddressIndicator = random.choice(BadAddressIndicator)
-        try:
-            AddressUsage = TABLES["HL70617"][1]
-        except:
-            AddressUsage = "M","V","C"
-        AddressUsage = random.choice(AddressUsage)
-        Addressee = iris.cls(__name__).GenerateST(ver,charSep)
-        Comment = iris.cls(__name__).GenerateST(ver,charSep)
-        PreferenceOrder = iris.cls(__name__).GenerateNM(ver,charSep)
-        try:
-            ProtectionCode = TABLES["HL70618"][1]
-        except:
-            ProtectionCode = "LI","UL","UP"
-        ProtectionCode = random.choice(ProtectionCode)
-        AddressIdentifier = iris.cls(__name__).GenerateEI(ver,charSep)
-
         return f"{StreetAddress}{CompSep}{OtherDesignation}{CompSep}{City}{CompSep}{StateorProvince}{CompSep}{ZiporPostalCode}{CompSep}{Country}{CompSep}{AddressType}{CompSep}{OtherGeographicDesignation}{CompSep}{CountyParishCode}{CompSep}{CensusTract}{CompSep}{AddressRepresentationCode}{CompSep}{AddressValidityRange}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{ExpirationReason}{CompSep}{TemporaryIndicator}{CompSep}{BadAddressIndicator}{CompSep}{AddressUsage}{CompSep}{Addressee}{CompSep}{Comment}{CompSep}{PreferenceOrder}{CompSep}{ProtectionCode}{CompSep}{AddressIdentifier}"
 }
 
@@ -4694,26 +4824,26 @@ ClassMethod GenerateXCN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
     except:
         IdentifierTypeCode = "AM","AN","ANON","ANC","AND","ANT","APRN","BA","BC","BR","BRN","CC","CY","DDS","DEA","DI","DFN","DL","DN","DPM","DO","DR","DS","EI","EN","FI","GI","GL","GN","HC","JHN","IND","LI","LN","LR","MA","MB","MC","MCD","MCN","MCR","MD","MI","MR","MRT","MS","NE","NH","NI","NII","NIIP","NNxxx","NP","NPI","OD","PA","PCN","PE","PEN","PI","PN","PNT","PPN","PRC","PRN","PT","QA","RI","RPH","RN","RR","RRI","SL","SN","SR","SS","TAX","TN","U","UPIN","VN","VS","WC","WCN","XX"
     IdentifierTypeCode = random.choice(IdentifierTypeCode)
-    AssigningFacility  = iris.cls(__name__).GenerateHD(ver,CompSep)
+    AssigningFacility  = fake.company()
     # NameRepresentationCode logic
     try:
         NameRepresentationCode = TABLES["HL70465"][1]
     except:
         NameRepresentationCode = "I","A","P"
     NameRepresentationCode = random.choice(NameRepresentationCode)
-    NameContext = iris.cls(__name__).GenerateCE(ver,CompSep)
-    NameValidityRange = iris.cls(__name__).GenerateDR(ver,CompSep,SubCompSep)
+    NameContext = iris.cls(__name__).GenerateCE(ver,CompSep,"1")
+    NameValidityRange = iris.cls(__name__).GenerateDR(ver,CompSep,"1")
     # NameAssemblyOrder logic
     try:
         NameAssemblyOrder = TABLES["HL70444"][1]
     except:
         NameAssemblyOrder = "G","F"
     NameAssemblyOrder = random.choice(NameAssemblyOrder)
-    EffectiveDate = iris.cls(__name__).GenerateTS(ver,CompSep)
-    ExpirationDate = iris.cls(__name__).GenerateTS(ver,CompSep)
+    EffectiveDate = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
+    ExpirationDate = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
     ProfessionalSuffix = iris.cls(__name__).GenerateST(ver,CompSep)
-    AssigningJurisdiction = iris.cls(__name__).GenerateCWE(ver,CompSep)
-    AssigningAgencyorDepartment = iris.cls(__name__).GenerateCWE(ver,CompSep)
+    AssigningJurisdiction = iris.cls(__name__).GenerateCWE(ver,CompSep,"1")
+    AssigningAgencyorDepartment = iris.cls(__name__).GenerateCWE(ver,CompSep,"1")
     if ver > "2.6":
         SecurityCheck = iris.cls(__name__).GenerateST(ver,CompSep)
         # SecurityCheckScheme Logic
@@ -4722,7 +4852,9 @@ ClassMethod GenerateXCN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         except:
             SecurityCheckScheme = "BCV","CCS","VID"
         SecurityCheckScheme = random.choice(SecurityCheckScheme)
-    if ver < "2.5":
+    if ver < "2.4":
+        return f"{PersonIdentifier}{CompSep}{FamilyName}{CompSep}{GivenName}{CompSep}{SecondandFurtherGivenNamesor}{CompSep}{Suffix}{CompSep}{Prefix}{CompSep}{Degree}{CompSep}{SourceTable}{CompSep}{AssigningAuthority}{CompSep}{NameTypeCode}{CompSep}{IdentifierCheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{NameRepresentationCode}"
+    elif ver < "2.5":
         return f"{PersonIdentifier}{CompSep}{FamilyName}{CompSep}{GivenName}{CompSep}{SecondandFurtherGivenNamesor}{CompSep}{Suffix}{CompSep}{Prefix}{CompSep}{Degree}{CompSep}{SourceTable}{CompSep}{AssigningAuthority}{CompSep}{NameTypeCode}{CompSep}{IdentifierCheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{NameRepresentationCode}{CompSep}{NameContext}{CompSep}{NameValidityRange}{CompSep}{NameAssemblyOrder}"
     elif ver < "2.7":
         return f"{PersonIdentifier}{CompSep}{FamilyName}{CompSep}{GivenName}{CompSep}{SecondandFurtherGivenNamesor}{CompSep}{Suffix}{CompSep}{Prefix}{CompSep}{Degree}{CompSep}{SourceTable}{CompSep}{AssigningAuthority}{CompSep}{NameTypeCode}{CompSep}{IdentifierCheckDigit}{CompSep}{CheckDigitScheme}{CompSep}{IdentifierTypeCode}{CompSep}{AssigningFacility}{CompSep}{NameRepresentationCode}{CompSep}{NameContext}{CompSep}{NameValidityRange}{CompSep}{NameAssemblyOrder}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{ProfessionalSuffix}{CompSep}{AssigningJurisdiction}{CompSep}{AssigningAgencyorDepartment}"
@@ -4833,18 +4965,21 @@ ClassMethod GenerateXPN(ver = "2.5", charSep = "|^~\&") [ Language = python ]
         NameRepresentationCode = "I","A","P"
     NameRepresentationCode = random.choice(NameRepresentationCode)
     NameContext = iris.cls(__name__).GenerateCE(ver,CompSep)
-    NameValidityRange = iris.cls(__name__).GenerateDR(ver,charSep,SubCompSep)
+    NameValidityRange = iris.cls(__name__).GenerateDR(ver,charSep,"1")
     # NameAssemblyOrder logic
     try:
         NameAssemblyOrder = TABLES["HL70444"][1]
     except:
         NameAssemblyOrder = "G","F"
     NameAssemblyOrder = random.choice(NameAssemblyOrder)
-    EffectiveDate = iris.cls(__name__).GenerateTS(ver,CompSep)
-    ExpirationDate = iris.cls(__name__).GenerateTS(ver,CompSep)
+    EffectiveDate = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
+    ExpirationDate = iris.cls(__name__).GenerateTS(ver,CompSep,"1")
     ProfessionalSuffix = iris.cls(__name__).GenerateST(ver,CompSep)
     CalledBy = iris.cls(__name__).GenerateST(ver,CompSep)
-    if ver < "2.7":
+    if ver <"2.4":
+        return f"{FamilyName}{CompSep}{GivenName}{CompSep}{SecondandFurtherGivenNamesor}{CompSep}{Suffix}{CompSep}{Prefix}{CompSep}{Degree}{CompSep}{NameTypeCode}{CompSep}{NameRepresentationCode}"
+    
+    elif ver < "2.7":
         return f"{FamilyName}{CompSep}{GivenName}{CompSep}{SecondandFurtherGivenNamesor}{CompSep}{Suffix}{CompSep}{Prefix}{CompSep}{Degree}{CompSep}{NameTypeCode}{CompSep}{NameRepresentationCode}{CompSep}{NameContext}{CompSep}{NameValidityRange}{CompSep}{NameAssemblyOrder}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{ProfessionalSuffix}"
     else:
         return f"{FamilyName}{CompSep}{GivenName}{CompSep}{SecondandFurtherGivenNamesor}{CompSep}{Suffix}{CompSep}{Prefix}{CompSep}{Degree}{CompSep}{NameTypeCode}{CompSep}{NameRepresentationCode}{CompSep}{NameContext}{CompSep}{NameValidityRange}{CompSep}{NameAssemblyOrder}{CompSep}{EffectiveDate}{CompSep}{ExpirationDate}{CompSep}{ProfessionalSuffix}{CompSep}{CalledBy}"

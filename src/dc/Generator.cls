@@ -260,7 +260,7 @@ Class dc.Generator Extends %SwizzleObject
                 case "GTS":
                     GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateGTS(hl7version,characterSeparators)
                 case "HD":
-                    GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateHD(hl7version,characterSeparators,fieldname)
+                    GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateHD(hl7version,characterSeparators)
                 case "ICD":
                     GeneratedDataType = iris.cls("dc.GenerateDataType").GenerateICD(hl7version,characterSeparators)
                 case "ID":
@@ -434,7 +434,6 @@ Class dc.Generator Extends %SwizzleObject
 
             if message in message_types:
             #    print("YES")
-
                 message_structure = cr.load_reference(message, "Message", hl7version)
             #    print(f"message_structure: {message_structure}")
                 with open("message_structure.txt", 'w', encoding='utf-8') as file:
@@ -627,10 +626,10 @@ Class dc.Generator Extends %SwizzleObject
                     else:
                         # Get the data type for the field
                     #    print("else HERE")
-                    #    print(field)
-                    #    print(field_datatype)
-                    #    print(field_name)
-                    #    print(message)
+                    #    print(f"field: {field}")
+                    #    print(f"field_datatype: {field_datatype}")
+                    #    print(f"field_name: {field_name}")
+                    #    print(f"message: {message}")
                         try:
                             sample_data_type=iris.cls(__name__).GenerateSampleDataType(hl7version,field_datatype,field_name,message)
                         except Exception as e:
@@ -671,19 +670,19 @@ Class dc.Generator Extends %SwizzleObject
             segment = "NTE"
         # set segment_tuple to the segment for the HL7 version listed
         segment_tuple = cr.load_reference(segment, "Segment", hl7version)
-    #    print(segment_tuple)
+    #    print(f"segment_tuple: {segment_tuple}")
     #    print(type(segment_tuple))
     #    print(isinstance(segment_tuple,tuple))
     #    print(segment_tuple[0])
     #    print(segment_tuple[1])
-    #    print(len(segment_tuple))
+    #    print(len(segment_tuple[1]))
     #    print(isinstance(segment_tuple[1],str))
 
     #    print(type(segment_tuple[2]))
     #    print(isinstance(segment_tuple[2],str))
     #    print(segment_tuple[2])
         # if the segment tuple from HL7apy has more than 1 piece then do something.  This is the "Withdrawn" case.
-        if len(segment_tuple) > 1:
+        if len(segment_tuple[1]) > 0:
             
             sample_segment = segment
 
@@ -703,16 +702,18 @@ Class dc.Generator Extends %SwizzleObject
                 elif field == "MSH_2":
                     sample_segment = sample_segment + EncodingCharacters
                 elif field == "MSH_9":
+                #    print(f"message: {message}")
+                #    print(f"field: {field}")
+                    reformed_message=message.replace("^","_")
+                #    print(f"reformed_message: {reformed_message}")
                     if message.split("^")[0] =="ACK":
-                        sample_segment = sample_segment + FieldSeparator + "ACK"
+                        sample_segment = sample_segment + FieldSeparator + "ACK^S20"
                     else:
-                    #    print(f"message: {message}")
-                    #    print(f"field: {field}")
                         try:
-                            MSH9 = iris.cls(__name__).GenerateAFieldForVersion(hl7version, field, characterSeparators,"","",message)
-                    #        print(f"MSH9: {MSH9}")
+                            MSH9 = iris.cls(__name__).GenerateAFieldForVersion(hl7version, field, characterSeparators,1,1,reformed_message)
                         except Exception as e:
                             print(e)
+                    #    print(f"MSH9: {MSH9}")
                         sample_segment = sample_segment + FieldSeparator + MSH9
                         
                 elif field == "MSH_12":

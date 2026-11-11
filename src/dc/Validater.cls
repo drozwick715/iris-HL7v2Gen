@@ -26,7 +26,7 @@ Class dc.Validater Extends %SwizzleObject
     #msg.validate(report_file='validation_report.txt')
     #/usr/irissys/mgr/user/validation_report.txt
 
-#    print(f"msg: {msg}")
+    print(f"msg: {msg}")
     status=0
     try:
         parsedmessage = parser.parse_message(msg.replace('\n', '\r'), find_groups=True, validation_level=2)

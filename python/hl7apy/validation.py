@@ -73,6 +73,19 @@ class Validator(object):
         :return: The True if everything is ok
         :raises: :exc:`ValidationError <hl7apy.exceptions.ValidationError>`: when errors occur
         :raises: :exc:`ValidationWarning <hl7apy.exceptions.ValidationWarning>`: errors concerning the values
+        >>> message="MSH|^~\\&|||||||ADT^A24|AXZ3JML2|68|2.1||\\rEVN|75|20261015183729^M||\\r" \
+	"PID|||362^ZSJTL^M11||Christopher^Hannah^Martinez^II^Mr.^MA|||||||||||||||\\r" \
+	"PV1||30|80||||||||||||||||||||||||||||||||||||||||||||||\\r" \
+	"PID|||989^UTKYY^M11||Miranda^Jeff^Campbell^DDS^Mrs.^BT|||||||||||||||\\r"
+        >>> m = parse_message(message)
+        >>> print(m)
+        <Message OML_O33>
+        >>> print(m.msh.sending_application.to_er7())
+        GHH_ADT
+        >>> print(m.children)
+        [<Segment MSH>, <Group OML_O33_PATIENT>]
+        >>> m.validate()
+
         """
 
         from hl7apy.core import is_base_datatype
@@ -148,7 +161,7 @@ class Validator(object):
                 except ChildNotFound:
                     errs.append(ValidationError("Invalid element found: {}".format(el)))
 
-            if ref[0] in ('sequence', 'choice'):
+            if ref[0] in ('sequence', 'choice'): # type: ignore
                 element_children = {c.name for c in el.children if not c.is_z_element()}
                 valid_children, valid_children_refs = _get_valid_children_info(ref)
 

@@ -315,4 +315,54 @@ ClassMethod GetAllSegmentsForVersion(hl7version = "2.5") As %Status [ Language =
         return segment_list
 }
 
+ClassMethod GetAllTriggersForVersion(hl7version = "2.5", adddescription = 0) As %Status [ Language = python ]
+{
+        """
+            Method to return all the triggers for a HL7 version
+
+            Parms
+                hl7version: HL7 version in quotation marks
+
+            Returns
+                The HL7 trigger names
+        """
+        import iris,importlib
+        import hl7apy as cr
+        from HL7v2Gen import hl7_trigger_events 
+
+        trigger_events_with_descriptions = []
+        #Get HL7 version related library
+        if hl7version in cr.SUPPORTED_LIBRARIES:      
+            module_name = cr.SUPPORTED_LIBRARIES[hl7version]
+            print(f"Importing module: {module_name}")
+            lib = importlib.import_module(module_name)
+            #get trigger reference
+            try:
+                triggers = lib.triggers.TRIGGERS
+            except Exception as e:
+                print(f"Error retrieving triggers: {e}")
+
+            trigger_types = list(triggers.keys())
+            print(f"Trigger types as list: {trigger_types}")
+            
+            if 'ACK' in trigger_types:
+                #Move ACK message at the end
+                trigger_types.remove('ACK')  # Remove 'ACK' from its current position
+                trigger_types.append('ACK')  # Append 'ACK' to the end
+            for trigger in trigger_types:
+                print(f"Trigger: {trigger}")
+            #    print(f"Trigger description: {triggers[trigger]}")
+                if int(adddescription) == 1:
+                    description = hl7_trigger_events.get(trigger, "Description not found")
+                #    Get description from dictionary
+                #    print(description)
+                    if description != "Description not found":
+                        trigger_events_with_descriptions.append(f"{trigger}-{description}")
+                        result = '|'.join(trigger_events_with_descriptions)
+                    else:
+                        trigger_events_with_descriptions.append(f"{trigger}")
+                        result = '|'.join(trigger_events_with_descriptions)
+            return result
+
+}
 }
